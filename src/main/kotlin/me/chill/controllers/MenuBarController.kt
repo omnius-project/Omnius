@@ -23,7 +23,27 @@ class MenuBarController : Controller() {
     println("Exporting")
   }
 
+  fun launchOptions() {
+    println("Launching options")
+  }
+
   fun exit() {
     println("Exiting")
+  }
+
+  fun undoAction() {
+    println("Undoing action")
+  }
+
+  fun redoAction() {
+    println("Redoing action")
+  }
+
+  fun cut() {
+    println("Cutting")
+  }
+
+  fun copy() {
+    println("Copying")
   }
 }

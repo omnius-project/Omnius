@@ -21,8 +21,18 @@ class MenuBar : View() {
       item("Export").action(controller::export)
 
       separator()
-
+      item("Options").action(controller::launchOptions)
       item("Exit").action(controller::exit)
+    }
+
+    menu("Edit") {
+      item("Undo").action(controller::undoAction)
+      item("Redo").action(controller::redoAction)
+
+      separator()
+
+      item("Cut").action(controller::cut)
+      item("Copy").action(controller::copy)
     }
   }
 }
