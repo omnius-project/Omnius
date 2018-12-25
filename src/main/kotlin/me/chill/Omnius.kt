@@ -8,7 +8,7 @@ import tornadofx.App
 
 class Omnius : App(Editor::class, MenuBarStyles::class, Styles::class) {
   override fun start(stage: Stage) {
-    stage.isMaximized = true
+//    stage.isMaximized = true
     stage.title = "Omnius: Markdown Editor"
     stage.icons += resources.image("../../icon.png")
     super.start(stage)
