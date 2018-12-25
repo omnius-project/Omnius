@@ -66,5 +66,9 @@ class MenuBar : View() {
         accelerator = KeyCombination.keyCombination("Ctrl+C")
       }.action(controller::copy)
     }
+
+    menu("View") {
+      item("Visible Windows")
+    }
   }
 }

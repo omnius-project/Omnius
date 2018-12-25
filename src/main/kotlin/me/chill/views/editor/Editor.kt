@@ -2,12 +2,15 @@ package me.chill.views.editor
 
 import javafx.scene.input.KeyCombination
 import me.chill.controllers.EditorController
-import tornadofx.View
-import tornadofx.borderpane
-import tornadofx.vbox
+import tornadofx.*
 
+// TODO: Add support for Jekyll specific sites aka editing the metadata of .md files
 class Editor : View("Omnius") {
   private val controller: EditorController by inject()
+  private val menuBar: MenuBar by inject()
+  private val toolBar: ToolBar by inject()
+  private val editingArea: EditingArea by inject()
+  private val statusBar: StatusBar by inject()
 
   override val root = borderpane {
     minWidth = 1000.0
@@ -16,13 +19,13 @@ class Editor : View("Omnius") {
     loadShortcuts()
 
     top = vbox {
-      add(find(MenuBar::class))
-      add(find(ToolBar::class))
+      add(menuBar)
+      add(toolBar)
     }
 
-    center(EditingArea::class)
+    center(editingArea::class)
 
-    bottom(StatusBar::class)
+    bottom(statusBar::class)
   }
 
   private fun loadShortcuts() {

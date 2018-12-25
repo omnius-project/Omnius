@@ -1,7 +1,6 @@
 package me.chill.controllers
 
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.FILE
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.FOLDER
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.*
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
 import javafx.application.Platform
 import javafx.scene.control.MenuItem
@@ -13,6 +12,8 @@ import tornadofx.Controller
 import java.io.File
 
 class EditorController : Controller() {
+  private var isOpeningFile = false
+
   // Opens a folder and populates the tree view with the folder structure
   fun openFolder(primaryStage: Stage) {
     // TODO: Open folder relative to the current directory
@@ -20,7 +21,14 @@ class EditorController : Controller() {
     directoryChooser.title = "Open Folder"
     val folder = directoryChooser.showDialog(primaryStage)
 
-    folder?.let { populateFolderView(it) } ?: return
+    // TODO: Opening the folder should inform the user via progress bar in notification system
+    folder?.let {
+      if (!isOpeningFile) {
+        StatusBarController.dispatchMessage("Opening folder: ${it.nameWithoutExtension}")
+        isOpeningFile = true
+        populateFolderView(it)
+      }
+    } ?: return
   }
 
   fun saveFile() {
@@ -65,6 +73,7 @@ class EditorController : Controller() {
     println("Copying")
   }
 
+  // TODO: Optimize tree traversal algorithm for large folders
   private fun createTree(file: File, parent: TreeItem<String>) {
     if (file.isHidden) return
 
@@ -72,6 +81,9 @@ class EditorController : Controller() {
       val treeItem = TreeItem(file.name)
       treeItem.graphic = FontAwesomeIconView(FOLDER)
       parent.children.add(treeItem)
+      treeItem.expandedProperty().addListener { _, old, new ->
+        treeItem.graphic = FontAwesomeIconView(if (!old && new) FOLDER_OPEN else FOLDER)
+      }
       file.listFiles()?.forEach { createTree(it, treeItem) }
     } else {
       val treeItem = TreeItem(file.name)
@@ -81,9 +93,18 @@ class EditorController : Controller() {
   }
 
   private fun populateFolderView(file: File) {
-    val rootItem = TreeItem(file.nameWithoutExtension)
-    rootItem.graphic = FontAwesomeIconView(FOLDER)
-    file.listFiles()?.forEach { createTree(it, rootItem) }
-    find(EditingArea::class).folderStructure.root = rootItem
+    runAsync {
+      val rootItem = TreeItem(file.nameWithoutExtension)
+      rootItem.graphic = FontAwesomeIconView(FOLDER_OPEN)
+      file.listFiles()?.forEach { createTree(it, rootItem) }
+
+      rootItem
+    } ui {
+      val folderView = find(EditingArea::class).folderStructure
+      folderView.root = it
+      it.isExpanded = true
+      isOpeningFile = false
+      StatusBarController.dispatchMessage("${file.nameWithoutExtension} opened successfully")
+    }
   }
 }
