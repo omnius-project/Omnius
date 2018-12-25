@@ -4,11 +4,11 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.*
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
 import javafx.scene.input.KeyCombination
-import me.chill.controllers.MenuBarController
+import me.chill.controllers.EditorController
 import tornadofx.*
 
 class MenuBar : View() {
-  private val controller: MenuBarController by inject()
+  private val controller: EditorController by inject()
 
   // TODO: Make a keymap system
   override val root = menubar {
@@ -16,7 +16,7 @@ class MenuBar : View() {
       item("Open folder").apply {
         graphic = FontAwesomeIconView(FOLDER_OPEN)
         accelerator = KeyCombination.keyCombination("Ctrl+O")
-      }.action(controller::openFolder)
+      }.action { controller.openFolder(primaryStage) }
 
       separator()
 
@@ -38,7 +38,9 @@ class MenuBar : View() {
         graphic = FontAwesomeIconView(COG)
         accelerator = KeyCombination.keyCombination("Ctrl+Shift+O")
       }.action(controller::launchOptions)
-      item("Exit").action(controller::exit)
+      item("Exit").action {
+        controller.exit(this)
+      }
     }
 
     menu("Edit") {

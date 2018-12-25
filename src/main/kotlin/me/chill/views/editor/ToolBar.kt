@@ -3,27 +3,26 @@ package me.chill.views.editor
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.*
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
-import javafx.geometry.Orientation
-import javafx.geometry.Orientation.VERTICAL
-import javafx.scene.control.SeparatorMenuItem
+import javafx.scene.input.KeyCombination
+import me.chill.controllers.EditorController
 import me.chill.styles.MenuBarStyles.Companion.tbar
 import tornadofx.*
 
 class ToolBar : View() {
+  private val controller: EditorController by inject()
+
   override val root = vbox {
     addClass(tbar)
     menubar {
       menu {
         graphic = setGlyph(FOLDER_OPEN)
         tooltip("Open Folder")
-      }
+      }.action { controller.openFolder(primaryStage) }
 
       menu {
         graphic = setGlyph(SAVE)
         tooltip("Save File")
       }
-
-      separator(VERTICAL)
 
       menu {
         graphic = setGlyph(CUT)
@@ -39,8 +38,6 @@ class ToolBar : View() {
         graphic = setGlyph(PASTE)
         tooltip("Paste")
       }
-
-      separator()
     }
   }
 
