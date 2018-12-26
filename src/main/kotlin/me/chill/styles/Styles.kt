@@ -1,13 +1,14 @@
 package me.chill.styles
 
 import javafx.scene.Cursor.HAND
-import javafx.scene.paint.Color.*
-import javafx.scene.text.FontWeight
+import javafx.scene.paint.Color.WHITE
 import javafx.scene.text.FontWeight.BOLD
-import tornadofx.Stylesheet
-import tornadofx.c
-import tornadofx.cssclass
+import tornadofx.*
+import tornadofx.FXVisibility.COLLAPSE
 
+/**
+ * Generic styles to be applied across the editor
+ */
 class Styles : Stylesheet() {
   companion object {
     val dangerButton by cssclass()
@@ -33,6 +34,28 @@ class Styles : Stylesheet() {
       and(hover) {
         backgroundColor += c("#E53935")
       }
+    }
+
+    select(".decrement-button, .increment-button") {
+      prefHeight = 0.px
+    }
+
+    select(".decrement-arrow, .increment-arrow") {
+      visibility = COLLAPSE
+    }
+
+    thumb {
+      and(hover) {
+        cursor = HAND
+        backgroundColor += c("#BDBDBD", 0.5)
+      }
+
+      backgroundRadius += box(15.px)
+      backgroundColor += c("#BDBDBD", 0.2)
+    }
+
+    track {
+      backgroundColor += c("#EEEEEE")
     }
   }
 }
