@@ -8,6 +8,7 @@ import javafx.stage.Stage
 import me.chill.models.FileExplorerItem
 import me.chill.ui.FolderTreeView
 import me.chill.utility.extensions.first
+import me.chill.utility.extensions.isImage
 import me.chill.views.editor.EditingArea
 import me.chill.views.fragments.ExitFragment
 import tornadofx.Controller
@@ -81,7 +82,8 @@ class EditorController : Controller() {
   }
 
   private fun setupFileSelectionAction(fileItem: FileExplorerItem) {
-    if (fileItem.file.isFile) {
+    val file = fileItem.file
+    if (file.isFile && !file.isImage) {
       statusBarController.dispatchMessage("Opening: ${fileItem.file.name}")
       openTab(fileItem)
     }
