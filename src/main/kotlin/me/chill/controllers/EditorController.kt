@@ -2,12 +2,9 @@ package me.chill.controllers
 
 import javafx.scene.control.Tab
 import javafx.scene.control.TextArea
-import javafx.scene.control.TreeItem
 import javafx.stage.DirectoryChooser
 import javafx.stage.Stage
 import me.chill.models.FileExplorerItem
-import me.chill.ui.FolderTreeView
-import me.chill.utility.extensions.first
 import me.chill.utility.extensions.isImage
 import me.chill.views.editor.EditingArea
 import me.chill.views.fragments.ExitFragment
@@ -16,14 +13,15 @@ import java.io.File
 
 // TODO: Split out the controllers for the editing area
 class EditorController : Controller() {
-  private val openTabs = mutableMapOf<FileExplorerItem, Tab>() // TODO: Move this to the custom tab view later
+
   private val editingArea = find<EditingArea>()
   private val folderView = editingArea.folderStructure
   private val contentArea = editingArea.contentArea
   private val statusBarController = find<StatusBarController>()
 
   init {
-    folderView.onDoubleClick(this::setupFileSelectionAction)
+    folderView.onDoubleClick(this::fileSelectionAction)
+    contentArea.setOnOpenAction { fileItem, tab -> openFileContents(fileItem.file, tab) }
   }
 
   // Opens a folder and populates the tree view with the folder structure
@@ -81,35 +79,15 @@ class EditorController : Controller() {
     println("Pasting")
   }
 
-  private fun setupFileSelectionAction(fileItem: FileExplorerItem) {
+  // TODO: Check the file extension first before opening
+  private fun fileSelectionAction(fileItem: FileExplorerItem) {
     val file = fileItem.file
     if (file.isFile && !file.isImage) {
       statusBarController.dispatchMessage("Opening: ${fileItem.file.name}")
-      openTab(fileItem)
+      contentArea.openTab(fileItem, file.name)
     }
   }
 
-  private fun openTab(fileItem: FileExplorerItem) {
-    val file = fileItem.file
-    val tab = Tab(file.name)
-      .apply { content = TextArea() }
-    tab.setOnClosed { openTabs.remove(fileItem) }
-
-    with(contentArea) {
-      val isFileAlreadyOpen = openTabs.none { it.key == fileItem }
-      if (isFileAlreadyOpen) {
-        tabs.add(tab)
-        selectionModel.select(tab)
-        openTabs[fileItem] = tab
-        openFileContents(fileItem.file, tab)
-      } else {
-        val existingTab = openTabs.first { it.key == fileItem }.value
-        selectionModel.select(existingTab)
-      }
-    }
-  }
-
-  // TODO: Check the file extension first before opening
   private fun openFileContents(file: File, tab: Tab) {
     with(tab.content as TextArea) {
       text = file.readText()
