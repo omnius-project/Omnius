@@ -23,18 +23,8 @@ class EditingAreaStyles : Stylesheet() {
       backgroundColor += TRANSPARENT
 
       and(selected) {
-        borderColor += box(
-          TRANSPARENT,
-          TRANSPARENT,
-          c("#448AFF"),
-          TRANSPARENT
-        )
-        borderWidth += box(
-          0.px,
-          0.px,
-          5.px,
-          0.px
-        )
+        borderColor += box(TRANSPARENT, TRANSPARENT, c("#448AFF"), TRANSPARENT)
+        borderWidth += box(0.px, 0.px, 5.px, 0.px)
       }
     }
   }

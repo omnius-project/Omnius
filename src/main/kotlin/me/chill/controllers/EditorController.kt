@@ -2,19 +2,24 @@ package me.chill.controllers
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.*
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
-import javafx.scene.control.*
+import javafx.scene.control.Tab
+import javafx.scene.control.TextArea
+import javafx.scene.control.TreeItem
+import javafx.scene.control.TreeView
 import javafx.stage.DirectoryChooser
 import javafx.stage.Stage
 import me.chill.models.FileExplorerItem
+import me.chill.utility.extensions.first
 import me.chill.views.editor.EditingArea
 import me.chill.views.fragments.ExitFragment
 import tornadofx.Controller
-import tornadofx.DrawerStyles.Companion.contentArea
-import tornadofx.select
 import java.io.File
 
+// TODO: Split out the controllers for the editing area
 class EditorController : Controller() {
   private var isOpeningFile = false
+  private val openTabs = mutableMapOf<FileExplorerItem, Tab>()
+  private val statusBarController = find<StatusBarController>()
 
   // Opens a folder and populates the tree view with the folder structure
   fun openFolder(primaryStage: Stage) {
@@ -26,7 +31,7 @@ class EditorController : Controller() {
     // TODO: Opening the folder should inform the user via progress bar in notification system
     folder?.let {
       if (!isOpeningFile) {
-        StatusBarController.dispatchMessage("Opening folder: ${it.nameWithoutExtension}")
+        statusBarController.dispatchMessage("Opening folder: ${it.nameWithoutExtension}")
         isOpeningFile = true
         populateFolderView(it)
       }
@@ -85,9 +90,11 @@ class EditorController : Controller() {
     if (file.isDirectory) {
       val treeItem = TreeItem(FileExplorerItem(file))
         .apply { graphic = FontAwesomeIconView(FOLDER) }
-      parent.children.add(treeItem)
-      treeItem.setupFolderIconAction()
-      file.listFiles()?.forEach { createTree(it, treeItem) }
+      with(treeItem) {
+        parent.children.add(this)
+        setupFolderIconAction()
+        file.listFiles()?.forEach { createTree(it, this) }
+      }
     } else {
       parent.children.add(
         TreeItem(FileExplorerItem(file))
@@ -102,20 +109,25 @@ class EditorController : Controller() {
         .apply {
           graphic = FontAwesomeIconView(FOLDER_OPEN)
           isExpanded = true
-          setupFolderIconAction()
         }
+      with(rootItem) {
+        setupFolderIconAction()
+      }
       file.listFiles()?.forEach { createTree(it, rootItem) }
 
       rootItem
     } ui {
-      find<EditingArea>()
-        .folderStructure
-        .apply {
-          root = it
-          setupFileSelectionAction()
-        }
+      with(find<EditingArea>().folderStructure.apply { root = it }) {
+        setupFileSelectionAction()
+      }
       isOpeningFile = false
-      StatusBarController.dispatchMessage("${file.nameWithoutExtension} opened successfully")
+      statusBarController.dispatchMessage("${file.nameWithoutExtension} opened successfully")
+    }
+  }
+
+  private fun <T> TreeItem<T>.setupFolderIconAction() {
+    expandedProperty().addListener { _, old, new ->
+      graphic = FontAwesomeIconView(if (!old && new) FOLDER_OPEN else FOLDER)
     }
   }
 
@@ -128,23 +140,34 @@ class EditorController : Controller() {
     }
   }
 
-  private fun <T> TreeItem<T>.setupFolderIconAction() {
-    expandedProperty().addListener { _, old, new ->
-      graphic = FontAwesomeIconView(if (!old && new) FOLDER_OPEN else FOLDER)
+  private fun openFileInContentArea(fileItem: FileExplorerItem) {
+    statusBarController.dispatchMessage("Opening: ${fileItem.file.name}")
+
+    openTab(fileItem)
+  }
+
+  private fun openTab(fileItem: FileExplorerItem) {
+    val file = fileItem.file
+    val tab = Tab(file.name)
+      .apply { content = TextArea() }
+    tab.setOnClosed { openTabs.remove(fileItem) }
+
+    with(find<EditingArea>().contentArea) {
+      if (openTabs.none { it.key == fileItem }) {
+        tabs.add(tab)
+        selectionModel.select(tab)
+        openTabs[fileItem] = tab
+        openFileContents(fileItem.file, tab)
+      } else {
+        val existingTab = openTabs.first { it.key == fileItem }
+        selectionModel.select(existingTab.value)
+      }
     }
   }
 
-  private fun openFileInContentArea(fileItem: FileExplorerItem) {
-    val file = fileItem.file
-    StatusBarController.dispatchMessage("Opening: ${file.name}")
-
-    val tab = Tab(file.name).apply {
-      content = TextArea()
-    }
-
-    find<EditingArea>().contentArea.apply {
-      tabs.add(tab)
-      selectionModel.select(tab)
+  private fun openFileContents(file: File, tab: Tab) {
+    with(tab.content as TextArea) {
+      text = file.readText()
     }
   }
 }

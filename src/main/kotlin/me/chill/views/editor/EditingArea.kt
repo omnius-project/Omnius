@@ -9,7 +9,6 @@ import tornadofx.View
 import tornadofx.splitpane
 import tornadofx.tabpane
 import tornadofx.treeview
-import java.io.File
 
 // TODO: When maximizing the window, take into account the divider positions and apply the same ratio to maximized window
 // TODO: Allow the file explorer window to be collapsed, display an arrow to re-show if that happens
@@ -24,6 +23,7 @@ class EditingArea : View() {
     folderStructure = treeview()
 
     // TODO: Load the prior open folder contents from last use
+    // TODO: Allow the tabs to be re-arranged
     contentArea = tabpane()
   }
 }
