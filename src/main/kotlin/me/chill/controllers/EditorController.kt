@@ -2,12 +2,13 @@ package me.chill.controllers
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.*
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
-import javafx.application.Platform
 import javafx.scene.control.MenuItem
 import javafx.scene.control.TreeItem
 import javafx.stage.DirectoryChooser
+import javafx.stage.Modality
 import javafx.stage.Stage
 import me.chill.views.editor.EditingArea
+import me.chill.views.fragments.ExitFragment
 import tornadofx.Controller
 import java.io.File
 
@@ -17,9 +18,9 @@ class EditorController : Controller() {
   // Opens a folder and populates the tree view with the folder structure
   fun openFolder(primaryStage: Stage) {
     // TODO: Open folder relative to the current directory
-    val directoryChooser = DirectoryChooser()
-    directoryChooser.title = "Open Folder"
-    val folder = directoryChooser.showDialog(primaryStage)
+    val folder = DirectoryChooser()
+      .apply { title = "Open Folder" }
+      .showDialog(primaryStage)
 
     // TODO: Opening the folder should inform the user via progress bar in notification system
     folder?.let {
@@ -51,10 +52,8 @@ class EditorController : Controller() {
     println("Launching options")
   }
 
-  fun exit(menuItem: MenuItem) {
-    // TODO: Check if work is saved
-    // TODO: Save preferences on close
-    Platform.exit()
+  fun exit() {
+    find<ExitFragment>().openModal(resizable = false)
   }
 
   fun undoAction() {
@@ -73,38 +72,48 @@ class EditorController : Controller() {
     println("Copying")
   }
 
+  fun paste() {
+    println("Pasting")
+  }
+
   // TODO: Optimize tree traversal algorithm for large folders
   private fun createTree(file: File, parent: TreeItem<String>) {
     if (file.isHidden) return
 
     if (file.isDirectory) {
-      val treeItem = TreeItem(file.name)
-      treeItem.graphic = FontAwesomeIconView(FOLDER)
-      parent.children.add(treeItem)
-      treeItem.expandedProperty().addListener { _, old, new ->
-        treeItem.graphic = FontAwesomeIconView(if (!old && new) FOLDER_OPEN else FOLDER)
+      val treeItem = TreeItem(file.name).apply {
+        graphic = FontAwesomeIconView(FOLDER)
       }
+      parent.children.add(treeItem)
+      treeItem.setupFolderIconAction()
       file.listFiles()?.forEach { createTree(it, treeItem) }
     } else {
-      val treeItem = TreeItem(file.name)
-      treeItem.graphic = FontAwesomeIconView(FILE)
-      parent.children.add(treeItem)
+      parent.children.add(TreeItem(file.name).apply {
+        graphic = FontAwesomeIconView(FILE)
+      })
     }
   }
 
   private fun populateFolderView(file: File) {
     runAsync {
-      val rootItem = TreeItem(file.nameWithoutExtension)
-      rootItem.graphic = FontAwesomeIconView(FOLDER_OPEN)
+      val rootItem = TreeItem(file.nameWithoutExtension).apply {
+        graphic = FontAwesomeIconView(FOLDER_OPEN)
+        isExpanded = true
+        setupFolderIconAction()
+      }
       file.listFiles()?.forEach { createTree(it, rootItem) }
 
       rootItem
     } ui {
-      val folderView = find(EditingArea::class).folderStructure
-      folderView.root = it
-      it.isExpanded = true
+      find<EditingArea>().folderStructure.apply { root = it }
       isOpeningFile = false
       StatusBarController.dispatchMessage("${file.nameWithoutExtension} opened successfully")
+    }
+  }
+
+  private fun <T> TreeItem<T>.setupFolderIconAction() {
+    expandedProperty().addListener { _, old, new ->
+      graphic = FontAwesomeIconView(if (!old && new) FOLDER_OPEN else FOLDER)
     }
   }
 }

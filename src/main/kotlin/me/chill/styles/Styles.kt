@@ -1,7 +1,9 @@
 package me.chill.styles
 
 import javafx.scene.Cursor.HAND
-import javafx.scene.paint.Color.WHITE
+import javafx.scene.paint.Color.*
+import javafx.scene.text.FontWeight
+import javafx.scene.text.FontWeight.BOLD
 import tornadofx.Stylesheet
 import tornadofx.c
 import tornadofx.cssclass
@@ -11,6 +13,7 @@ class Styles : Stylesheet() {
     val dangerButton by cssclass()
 
     private val bg = c("#FAFAFA")
+    val dangerRed = c("#EF5350")
   }
 
   init {
@@ -23,8 +26,13 @@ class Styles : Stylesheet() {
     }
 
     dangerButton {
-      backgroundColor += c("#FF5252")
+      backgroundColor += dangerRed
+      fontWeight = BOLD
       textFill = WHITE
+
+      and(hover) {
+        backgroundColor += c("#E53935")
+      }
     }
   }
 }
