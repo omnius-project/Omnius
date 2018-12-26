@@ -8,6 +8,7 @@ import me.chill.styles.Styles
 import me.chill.views.editor.Editor
 import tornadofx.App
 
+// TODO: Introduce a custom title bar
 class Omnius : App(
   Editor::class,
   MenuBarStyles::class,

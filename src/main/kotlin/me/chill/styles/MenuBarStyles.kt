@@ -15,22 +15,15 @@ class MenuBarStyles : Stylesheet() {
   init {
     menuItem {
       graphicContainer {
-        padding = box(0.px, 10.px, 0.px, 0.px)
+        padding = box(0.px, 10.px)
       }
 
-      and(hover) {
-        cursor = HAND
-      }
+      and(hover) { cursor = HAND }
     }
 
     tbar {
       backgroundColor += WHITE
-      borderColor += box(
-        TRANSPARENT,
-        TRANSPARENT,
-        subtleGrey,
-        TRANSPARENT
-      )
+      borderColor += box(TRANSPARENT, TRANSPARENT, subtleGrey, TRANSPARENT)
       borderWidth += box(0.px, 0.px, 1.px, 0.px)
 
       menu {
