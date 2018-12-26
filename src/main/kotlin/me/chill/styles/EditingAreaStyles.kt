@@ -23,10 +23,12 @@ class EditingAreaStyles : Stylesheet() {
       borderColor += box(TRANSPARENT)
     }
 
-    // TODO: Fix the weird resizing of the box whenever the item is leaving focus
     tab {
-      backgroundColor += TRANSPARENT
-      padding = box(5.px, 10.px)
+      backgroundColor += c("#ECEFF1")
+      padding = box(10.px, 10.px)
+      backgroundRadius += box(0.px)
+      borderColor += box(TRANSPARENT, TRANSPARENT, TRANSPARENT, TRANSPARENT)
+      borderWidth += box(0.px, 0.px, 5.px, 0.px)
 
       and(hover) {
         cursor = HAND
@@ -50,6 +52,7 @@ class EditingAreaStyles : Stylesheet() {
 
     select(".tab-label") {
       labelPadding = box(0.px, 10.px, 0.px, 10.px)
+      fontSize = 20.px
     }
   }
 }

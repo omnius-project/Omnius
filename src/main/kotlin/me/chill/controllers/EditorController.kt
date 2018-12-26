@@ -96,14 +96,15 @@ class EditorController : Controller() {
     tab.setOnClosed { openTabs.remove(fileItem) }
 
     with(contentArea) {
-      if (openTabs.none { it.key == fileItem }) {
+      val isFileAlreadyOpen = openTabs.none { it.key == fileItem }
+      if (isFileAlreadyOpen) {
         tabs.add(tab)
         selectionModel.select(tab)
         openTabs[fileItem] = tab
         openFileContents(fileItem.file, tab)
       } else {
-        val existingTab = openTabs.first { it.key == fileItem }
-        selectionModel.select(existingTab.value)
+        val existingTab = openTabs.first { it.key == fileItem }.value
+        selectionModel.select(existingTab)
       }
     }
   }

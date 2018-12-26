@@ -2,6 +2,7 @@ package me.chill.views.editor
 
 import javafx.geometry.Orientation
 import javafx.scene.control.TabPane
+import javafx.scene.control.TabPane.TabClosingPolicy.ALL_TABS
 import me.chill.controllers.EditorController
 import me.chill.ui.FolderTreeView
 import tornadofx.View
@@ -24,6 +25,8 @@ class EditingArea : View() {
     // TODO: Load the prior open folder contents from last use
     // TODO: Allow the tabs to be re-arranged
     // TODO: Bind the cursor position in the text area to the status bar to show where the cursor is
-    contentArea = tabpane()
+    contentArea = tabpane {
+      tabClosingPolicy = ALL_TABS
+    }
   }
 }
