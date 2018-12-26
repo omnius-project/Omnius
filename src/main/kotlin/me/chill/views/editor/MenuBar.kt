@@ -2,9 +2,12 @@ package me.chill.views.editor
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.*
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.PASTE
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.UNDO
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
-import javafx.scene.input.KeyCombination
 import me.chill.controllers.EditorController
+import me.chill.keymap.Keymap
+import me.chill.keymap.Keymap.*
 import tornadofx.*
 
 class MenuBar : View() {
@@ -14,19 +17,23 @@ class MenuBar : View() {
   override val root = menubar {
     menu("File") {
       item("Open folder").apply {
-        graphic = FontAwesomeIconView(FOLDER_OPEN)
-        accelerator = KeyCombination.keyCombination("Ctrl+O")
-      }.action { controller.openFolder(primaryStage) }
+        graphic = addGraphic(FOLDER_OPEN)
+        accelerator = OPEN_FOLDER.keyCombination
+        action { controller.openFolder(primaryStage) }
+      }
 
       separator()
 
       item("Save").apply {
-        graphic = FontAwesomeIconView(SAVE)
-        accelerator = KeyCombination.keyCombination("Ctrl+S")
-      }.action(controller::saveFile)
+        graphic = addGraphic(SAVE)
+        accelerator = SAVE_FILE.keyCombination
+        action(controller::saveFile)
+      }
+
       item("Save All").apply {
-        accelerator = KeyCombination.keyCombination("Ctrl+Shift+S")
-      }.action(controller::saveAll)
+        accelerator = SAVE_ALL.keyCombination
+        action(controller::saveAll)
+      }
 
       separator()
 
@@ -34,41 +41,58 @@ class MenuBar : View() {
       item("Export").action(controller::export)
 
       separator()
+
       item("Options").apply {
-        graphic = FontAwesomeIconView(COG)
-        accelerator = KeyCombination.keyCombination("Ctrl+Shift+O")
-      }.action(controller::launchOptions)
-      item("Exit").action {
-        controller.exit(this)
+        graphic = addGraphic(COG)
+        accelerator = OPTIONS.keyCombination
+        action(controller::launchOptions)
+      }
+
+      item("Exit").apply {
+        accelerator = EXIT.keyCombination
+        action(controller::exit)
       }
     }
 
     menu("Edit") {
       item("Undo").apply {
-        graphic = FontAwesomeIconView(UNDO)
-        accelerator = KeyCombination.keyCombination("Ctrl+Z")
-      }.action(controller::undoAction)
+        graphic = addGraphic(UNDO)
+        accelerator = Keymap.UNDO.keyCombination
+        action(controller::undoAction)
+      }
+
       item("Redo").apply {
-        graphic = FontAwesomeIconView(FontAwesomeIcon.UNDO).apply {
-          rotate = 180.0
-        }
-        accelerator = KeyCombination.keyCombination("Ctrl+Y")
-      }.action(controller::redoAction)
+        graphic = addGraphic(UNDO)
+          .apply { rotate = 180.0 }
+        accelerator = REDO.keyCombination
+        action(controller::redoAction)
+      }
 
       separator()
 
       item("Cut").apply {
-        graphic = FontAwesomeIconView(FontAwesomeIcon.CUT)
-        accelerator = KeyCombination.keyCombination("Ctrl+X")
-      }.action(controller::cut)
+        graphic = addGraphic(FontAwesomeIcon.CUT)
+        accelerator = Keymap.CUT.keyCombination
+        action(controller::cut)
+      }
+
       item("Copy").apply {
-        graphic = FontAwesomeIconView(FontAwesomeIcon.COPY)
-        accelerator = KeyCombination.keyCombination("Ctrl+C")
-      }.action(controller::copy)
+        graphic = addGraphic(FontAwesomeIcon.COPY)
+        accelerator = Keymap.COPY.keyCombination
+        action(controller::copy)
+      }
+
+      item("Paste").apply {
+        graphic = addGraphic(PASTE)
+        accelerator = Keymap.PASTE.keyCombination
+        action(controller::paste)
+      }
     }
 
     menu("View") {
       item("Visible Windows")
     }
   }
+
+  private fun addGraphic(glyph: FontAwesomeIcon) = FontAwesomeIconView(glyph)
 }
