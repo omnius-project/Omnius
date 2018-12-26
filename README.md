@@ -1,4 +1,5 @@
 # Omnius
+![](src/main/resources/preview.png)
 Markdown editor written in Kotlin and TornadoFX.
 
 ## Libraries used
