@@ -6,7 +6,6 @@ import tornadofx.Controller
 
 class ExitFragmentController : Controller() {
   fun exit() {
-    // TODO: Check if work is saved
     // TODO: Save preferences on close
     Platform.exit()
   }

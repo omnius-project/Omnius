@@ -1,8 +1,10 @@
 package me.chill.views.editor
 
-import javafx.scene.input.KeyCombination
 import me.chill.controllers.EditorController
-import tornadofx.*
+import me.chill.keymap.Keymap
+import tornadofx.View
+import tornadofx.borderpane
+import tornadofx.vbox
 
 // TODO: Add support for Jekyll specific sites aka editing the metadata of .md files
 class Editor : View("Omnius") {
@@ -29,7 +31,7 @@ class Editor : View("Omnius") {
   }
 
   private fun loadShortcuts() {
-    shortcut(KeyCombination.keyCombination("Ctrl+O")) {
+    shortcut(Keymap.OPEN_FOLDER.keyCombination) {
       controller.openFolder(primaryStage)
     }
   }

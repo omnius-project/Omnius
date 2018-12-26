@@ -24,16 +24,14 @@ class MenuBarStyles : Stylesheet() {
     }
 
     tbar {
-      menuBar {
-        backgroundColor += WHITE
-        borderColor += box(
-          TRANSPARENT,
-          TRANSPARENT,
-          subtleGrey,
-          TRANSPARENT
-        )
-        borderWidth += box(0.px, 0.px, 1.px, 0.px)
-      }
+      backgroundColor += WHITE
+      borderColor += box(
+        TRANSPARENT,
+        TRANSPARENT,
+        subtleGrey,
+        TRANSPARENT
+      )
+      borderWidth += box(0.px, 0.px, 1.px, 0.px)
 
       menu {
         padding = box(10.px)

@@ -16,8 +16,7 @@ class Omnius : App(
   Styles::class
 ) {
   override fun start(stage: Stage) {
-//    stage.isMaximized = true
-    stage.title = "Omnius: Markdown Editor"
+    stage.isMaximized = true
     stage.icons += resources.image("../../icon.png")
     super.start(stage)
   }

@@ -94,5 +94,6 @@ class MenuBar : View() {
     }
   }
 
-  private fun addGraphic(glyph: FontAwesomeIcon) = FontAwesomeIconView(glyph)
+  private fun addGraphic(glyph: FontAwesomeIcon) =
+    FontAwesomeIconView(glyph).apply { glyphSize = 20 }
 }
