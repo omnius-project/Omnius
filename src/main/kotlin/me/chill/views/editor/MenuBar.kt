@@ -16,6 +16,7 @@ class MenuBar : View() {
   // TODO: Make a keymap system
   override val root = menubar {
     menu("File") {
+      // TODO: Add options for new file and folder
       item("Open folder").apply {
         graphic = addGraphic(FOLDER_OPEN)
         accelerator = OPEN_FOLDER.keyCombination
