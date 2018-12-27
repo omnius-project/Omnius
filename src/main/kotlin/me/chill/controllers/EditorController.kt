@@ -16,7 +16,7 @@ class EditorController : Controller() {
 
   private val editingArea = find<EditingArea>()
   private val folderView = editingArea.folderStructure
-  private val contentArea = editingArea.contentArea
+  private val contentArea = editingArea.tabContentArea
   private val statusBarController = find<StatusBarController>()
 
   init {
@@ -24,7 +24,7 @@ class EditorController : Controller() {
     contentArea.setOnOpenAction { fileItem, tab -> openFileContents(fileItem.file, tab) }
   }
 
-  // Opens a folder and populates the tree view with the folder structure
+  // Populates the tree view with the folder structure
   fun openFolder(primaryStage: Stage) {
     // TODO: Open folder relative to the current directory
     val folder = DirectoryChooser()
