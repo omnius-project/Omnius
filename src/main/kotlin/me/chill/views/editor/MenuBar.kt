@@ -16,9 +16,20 @@ class MenuBar : View() {
   // TODO: Make a keymap system
   override val root = menubar {
     menu("File") {
+      menu("New").apply {
+        item("Folder").apply {
+          graphic = addGraphic(FOLDER_ALT)
+        }
+
+        separator()
+
+        item("Markdown document")
+        item("Untitled document")
+      }
+
       // TODO: Add options for new file and folder
       item("Open folder").apply {
-        graphic = addGraphic(FOLDER_OPEN)
+        graphic = addGraphic(FOLDER_OPEN_ALT)
         accelerator = OPEN_FOLDER.keyCombination
         action { controller.openFolder(primaryStage) }
       }
@@ -96,5 +107,5 @@ class MenuBar : View() {
   }
 
   private fun addGraphic(glyph: FontAwesomeIcon) =
-    FontAwesomeIconView(glyph).apply { glyphSize = 20 }
+    FontAwesomeIconView(glyph).apply { glyphSize = 16 }
 }
