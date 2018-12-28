@@ -1,14 +1,13 @@
 package me.chill.controllers
 
 import javafx.scene.control.Tab
-import javafx.scene.control.TextArea
 import javafx.stage.DirectoryChooser
 import javafx.stage.Stage
 import me.chill.models.FileExplorerItem
 import me.chill.ui.markdownarea.MarkdownEditingArea
-import me.chill.ui.markdownarea.MarkdownTextArea
 import me.chill.utility.extensions.isImage
 import me.chill.views.editor.EditingArea
+import me.chill.views.editor.ToolBar
 import me.chill.views.fragments.ExitFragment
 import tornadofx.Controller
 import java.io.File
@@ -19,9 +18,12 @@ class EditorController : Controller() {
   private val editingArea = find<EditingArea>()
   private val folderView = editingArea.folderStructure
   private val contentArea = editingArea.tabContentArea
+  private val toolbar = find<ToolBar>()
+
   private val statusBarController = find<StatusBarController>()
 
   init {
+    println("Creating editor controller")
     folderView.onDoubleClick(this::fileSelectionAction)
     contentArea.setOnOpenAction { fileItem, tab -> openFileContents(fileItem.file, tab) }
   }
@@ -29,7 +31,6 @@ class EditorController : Controller() {
   // Populates the tree view with the folder structure
   fun openFolder(primaryStage: Stage) {
     // TODO: Open folder relative to the current directory
-    // TODO: Opening a new folder should close all open tabs
     val folder = DirectoryChooser()
       .apply { title = "Open Folder" }
       .showDialog(primaryStage)
@@ -86,7 +87,7 @@ class EditorController : Controller() {
   }
 
   fun toggleToolBar() {
-
+    toolbar.toggleVisibility()
   }
 
   // TODO: Check the file extension first before opening

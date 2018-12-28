@@ -8,12 +8,15 @@ import me.chill.controllers.EditorController
 import me.chill.utility.glyphtools.GlyphFactory
 import tornadofx.*
 
+// TODO: Make the visibility of the tool bar an observable value
 class ToolBar : View() {
 
   private val controller: EditorController by inject()
   private val glyphFactory = GlyphFactory.Builder().glyphSize(24).build()
 
   override val root = toolbar {
+    managedProperty().bind(visibleProperty())
+
     button(FILE_ALT, "New File")
     button(FOLDER_OPEN_ALT, "Open Folder") {
       controller.openFolder(primaryStage)
@@ -34,6 +37,12 @@ class ToolBar : View() {
     button(STRIKETHROUGH, "Strikethrough")
 
     separator(VERTICAL)
+  }
+
+  fun toggleVisibility() {
+    with(root) {
+      isVisible = !isVisible
+    }
   }
 
   private fun ToolBar.button(icon: FontAwesomeIcon, tooltip: String, action: () -> Unit = { }) =

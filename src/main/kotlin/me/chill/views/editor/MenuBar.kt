@@ -73,7 +73,10 @@ class MenuBar : View() {
     }
 
     menu("View") {
-      checkmenuitem("Toggle toolbar").action(controller::toggleToolBar)
+      checkmenuitem("Toggle toolbar").apply {
+        isSelected = true
+        action(controller::toggleToolBar)
+      }
     }
   }
 
