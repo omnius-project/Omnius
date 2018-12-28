@@ -4,32 +4,36 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.*
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.PASTE
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.UNDO
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
 import me.chill.controllers.EditorController
 import me.chill.keymap.Keymap
 import me.chill.keymap.Keymap.*
+import me.chill.utility.glyphtools.GlyphFactory
 import tornadofx.*
 
 class MenuBar : View() {
+
   private val controller: EditorController by inject()
+  private val glyphFactory = GlyphFactory.Builder().build()
 
   // TODO: Make a keymap system
   override val root = menubar {
     menu("File") {
       menu("New").apply {
         item("Folder").apply {
-          graphic = addGraphic(FOLDER_ALT)
+          graphic = addGlyph(FOLDER_ALT)
         }
 
         separator()
 
-        item("Markdown document")
+        item("Markdown document").apply {
+          graphic = addGlyph(FILE)
+        }
         item("Untitled document")
       }
 
       // TODO: Add options for new file and folder
       item("Open folder").apply {
-        graphic = addGraphic(FOLDER_OPEN_ALT)
+        graphic = addGlyph(FOLDER_OPEN_ALT)
         accelerator = OPEN_FOLDER.keyCombination
         action { controller.openFolder(primaryStage) }
       }
@@ -37,7 +41,7 @@ class MenuBar : View() {
       separator()
 
       item("Save").apply {
-        graphic = addGraphic(SAVE)
+        graphic = addGlyph(SAVE)
         accelerator = SAVE_FILE.keyCombination
         action(controller::saveFile)
       }
@@ -55,7 +59,7 @@ class MenuBar : View() {
       separator()
 
       item("Options").apply {
-        graphic = addGraphic(COG)
+        graphic = addGlyph(COG)
         accelerator = OPTIONS.keyCombination
         action(controller::launchOptions)
       }
@@ -68,13 +72,13 @@ class MenuBar : View() {
 
     menu("Edit") {
       item("Undo").apply {
-        graphic = addGraphic(UNDO)
+        graphic = addGlyph(UNDO)
         accelerator = Keymap.UNDO.keyCombination
         action(controller::undoAction)
       }
 
       item("Redo").apply {
-        graphic = addGraphic(UNDO)
+        graphic = addGlyph(UNDO)
           .apply { rotate = 180.0 }
         accelerator = REDO.keyCombination
         action(controller::redoAction)
@@ -83,19 +87,19 @@ class MenuBar : View() {
       separator()
 
       item("Cut").apply {
-        graphic = addGraphic(FontAwesomeIcon.CUT)
+        graphic = addGlyph(FontAwesomeIcon.CUT)
         accelerator = Keymap.CUT.keyCombination
         action(controller::cut)
       }
 
       item("Copy").apply {
-        graphic = addGraphic(FontAwesomeIcon.COPY)
+        graphic = addGlyph(FontAwesomeIcon.COPY)
         accelerator = Keymap.COPY.keyCombination
         action(controller::copy)
       }
 
       item("Paste").apply {
-        graphic = addGraphic(PASTE)
+        graphic = addGlyph(PASTE)
         accelerator = Keymap.PASTE.keyCombination
         action(controller::paste)
       }
@@ -106,6 +110,5 @@ class MenuBar : View() {
     }
   }
 
-  private fun addGraphic(glyph: FontAwesomeIcon) =
-    FontAwesomeIconView(glyph).apply { glyphSize = 16 }
+  private fun addGlyph(glyph: FontAwesomeIcon) = glyphFactory.make(glyph)
 }

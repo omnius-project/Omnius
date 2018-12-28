@@ -1,6 +1,7 @@
 package me.chill.styles
 
 import javafx.scene.Cursor.HAND
+import javafx.scene.paint.Color.TRANSPARENT
 import javafx.scene.paint.Color.WHITE
 import javafx.scene.text.FontWeight.BOLD
 import tornadofx.*
@@ -13,8 +14,9 @@ class Styles : Stylesheet() {
   companion object {
     val dangerButton by cssclass()
 
-    private val bg = c("#FAFAFA")
+    val bg = c("#FAFAFA")
     val dangerRed = c("#EF5350")
+    val subtleGrey = c("#EDEDED")
   }
 
   init {
@@ -49,13 +51,12 @@ class Styles : Stylesheet() {
         cursor = HAND
         backgroundColor += c("#BDBDBD", 0.5)
       }
-
-      backgroundRadius += box(15.px)
+      backgroundRadius += box(0.px)
       backgroundColor += c("#BDBDBD", 0.2)
     }
 
     track {
-      backgroundColor += c("#EEEEEE")
+      backgroundColor += TRANSPARENT
     }
   }
 }

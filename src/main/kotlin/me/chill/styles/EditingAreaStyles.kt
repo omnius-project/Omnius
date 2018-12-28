@@ -2,6 +2,7 @@ package me.chill.styles
 
 import javafx.scene.Cursor.HAND
 import javafx.scene.paint.Color.TRANSPARENT
+import me.chill.styles.Styles.Companion.bg
 import tornadofx.Stylesheet
 import tornadofx.box
 import tornadofx.c
@@ -50,9 +51,12 @@ class EditingAreaStyles : Stylesheet() {
       padding = box(0.px)
     }
 
+    select(".headers-region, .tab-header-background") {
+      backgroundColor += bg
+    }
+
     select(".tab-label") {
       labelPadding = box(0.px, 10.px, 0.px, 10.px)
-      fontSize = 20.px
     }
   }
 }

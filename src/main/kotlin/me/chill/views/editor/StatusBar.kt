@@ -13,6 +13,6 @@ class StatusBar : View() {
 
   override val root = hbox {
     addClass(statusBar)
-    statusMessage = label("Hello world")
+    statusMessage = label()
   }
 }

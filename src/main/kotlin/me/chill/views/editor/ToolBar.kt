@@ -2,43 +2,50 @@ package me.chill.views.editor
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.*
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
+import javafx.geometry.Orientation.VERTICAL
 import me.chill.controllers.EditorController
-import me.chill.styles.MenuBarStyles.Companion.tbar
+import me.chill.utility.glyphtools.GlyphFactory
 import tornadofx.*
 
 class ToolBar : View() {
+
   private val controller: EditorController by inject()
+  private val glyphFactory = GlyphFactory.Builder().glyphSize(24).build()
 
-  override val root = menubar {
-    addClass(tbar)
-    menu {
-      graphic = addGlyph(FOLDER_OPEN)
+  override val root = toolbar {
+    button {
+      graphic = addGlyph(FILE_ALT)
+      tooltip("New File")
+    }
+
+    button {
+      graphic = addGlyph(FOLDER_OPEN_ALT)
       tooltip("Open Folder")
-      setOnMouseClicked { println("Hello") }
-    }.action { controller.openFolder(primaryStage) }
+      setOnMouseClicked { controller.openFolder(primaryStage) }
+    }
 
-    menu {
+    button {
       graphic = addGlyph(SAVE)
       tooltip("Save File")
     }
 
-    menu {
+    separator(VERTICAL)
+
+    button {
       graphic = addGlyph(CUT)
       tooltip("Cut")
     }
 
-    menu {
+    button {
       graphic = addGlyph(COPY)
       tooltip("Copy")
     }
 
-    menu {
+    button {
       graphic = addGlyph(PASTE)
       tooltip("Paste")
     }
   }
 
-  private fun addGlyph(glyph: FontAwesomeIcon) =
-    FontAwesomeIconView(glyph).apply { glyphSize = 24 }
+  private fun addGlyph(glyph: FontAwesomeIcon) = glyphFactory.make(glyph)
 }

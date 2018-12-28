@@ -17,6 +17,7 @@ import java.io.File
  */
 class FolderTreeView : TreeView<FileExplorerItem>() {
 
+  // TODO: Allow users to filter only markdown file
   private var isOpeningFile = false
   private val statusBarController = find<StatusBarController>()
 
@@ -41,7 +42,7 @@ class FolderTreeView : TreeView<FileExplorerItem>() {
     runAsync {
       val rootItem = TreeItem(FileExplorerItem(file))
         .apply {
-          graphic = FontAwesomeIconView(FontAwesomeIcon.FOLDER_OPEN)
+          graphic = FontAwesomeIconView(FontAwesomeIcon.FOLDER_OPEN_ALT)
           isExpanded = true
         }
       rootItem.setupFolderIconAction()
@@ -61,7 +62,7 @@ class FolderTreeView : TreeView<FileExplorerItem>() {
 
     if (file.isDirectory) {
       val treeItem = TreeItem(FileExplorerItem(file))
-        .apply { graphic = FontAwesomeIconView(FontAwesomeIcon.FOLDER) }
+        .apply { graphic = FontAwesomeIconView(FontAwesomeIcon.FOLDER_ALT) }
       with(treeItem) {
         parent.children.add(this)
         setupFolderIconAction()
@@ -70,7 +71,7 @@ class FolderTreeView : TreeView<FileExplorerItem>() {
     } else {
       parent.children.add(
         TreeItem(FileExplorerItem(file))
-          .apply { graphic = FontAwesomeIconView(FontAwesomeIcon.FILE) }
+          .apply { graphic = FontAwesomeIconView(FontAwesomeIcon.FILE_ALT) }
       )
     }
   }
@@ -79,8 +80,8 @@ class FolderTreeView : TreeView<FileExplorerItem>() {
     expandedProperty().addListener { _, old, new ->
       val isExpand = !old && new
       val folderIcon =
-        if (isExpand) FontAwesomeIcon.FOLDER_OPEN
-        else FontAwesomeIcon.FOLDER
+        if (isExpand) FontAwesomeIcon.FOLDER_OPEN_ALT
+        else FontAwesomeIcon.FOLDER_ALT
       graphic = FontAwesomeIconView(folderIcon)
     }
   }

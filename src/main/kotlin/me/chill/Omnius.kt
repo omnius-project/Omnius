@@ -1,10 +1,7 @@
 package me.chill
 
 import javafx.stage.Stage
-import me.chill.styles.EditingAreaStyles
-import me.chill.styles.MenuBarStyles
-import me.chill.styles.StatusBarStyles
-import me.chill.styles.Styles
+import me.chill.styles.*
 import me.chill.views.editor.Editor
 import tornadofx.App
 
@@ -12,6 +9,7 @@ import tornadofx.App
 class Omnius : App(
   Editor::class,
   MenuBarStyles::class,
+  ToolBarStyles::class,
   EditingAreaStyles::class,
   StatusBarStyles::class,
   Styles::class
