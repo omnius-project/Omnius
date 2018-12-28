@@ -9,6 +9,7 @@ import me.chill.utility.glyphtools.GlyphFactory
 import tornadofx.*
 
 // TODO: Make the visibility of the tool bar an observable value
+// TODO: Allow the tool bar to be dragged around
 class ToolBar : View() {
 
   enum class Position {

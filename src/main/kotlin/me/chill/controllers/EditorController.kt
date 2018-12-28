@@ -3,7 +3,7 @@ package me.chill.controllers
 import javafx.geometry.Orientation.HORIZONTAL
 import javafx.geometry.Orientation.VERTICAL
 import javafx.scene.control.Tab
-import javafx.scene.layout.VBox
+import javafx.scene.layout.AnchorPane
 import javafx.stage.DirectoryChooser
 import javafx.stage.Stage
 import me.chill.models.FileExplorerItem
@@ -17,6 +17,7 @@ import me.chill.views.editor.ToolBar.Position.TOP
 import me.chill.views.fragments.ExitFragment
 import tornadofx.Controller
 import tornadofx.add
+import tornadofx.anchorpaneConstraints
 import java.io.File
 
 // TODO: Split out the controllers for the editing area
@@ -111,9 +112,14 @@ class EditorController : Controller() {
             top.add(this)
           }
           LEFT -> {
-            if (left == null) left = VBox()
+            if (left == null) left = AnchorPane()
             orientation = VERTICAL
-            left.add(this)
+            left.add(this.anchorpaneConstraints {
+              bottomAnchor = 0
+              topAnchor = 0
+              leftAnchor = 0
+              rightAnchor = 0
+            })
           }
         }
       }
