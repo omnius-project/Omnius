@@ -56,7 +56,7 @@ class Styles : Stylesheet() {
     }
 
     track {
-      backgroundColor += TRANSPARENT
+      backgroundColor += WHITE
     }
   }
 }
