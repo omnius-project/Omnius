@@ -3,6 +3,7 @@ package me.chill.views.editor
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.*
 import javafx.geometry.Orientation.VERTICAL
+import javafx.scene.control.ToolBar
 import me.chill.controllers.EditorController
 import me.chill.utility.glyphtools.GlyphFactory
 import tornadofx.*
@@ -13,39 +14,36 @@ class ToolBar : View() {
   private val glyphFactory = GlyphFactory.Builder().glyphSize(24).build()
 
   override val root = toolbar {
-    button {
-      graphic = addGlyph(FILE_ALT)
-      tooltip("New File")
+    button(FILE_ALT, "New File")
+    button(FOLDER_OPEN_ALT, "Open Folder") {
+      controller.openFolder(primaryStage)
     }
-
-    button {
-      graphic = addGlyph(FOLDER_OPEN_ALT)
-      tooltip("Open Folder")
-      setOnMouseClicked { controller.openFolder(primaryStage) }
-    }
-
-    button {
-      graphic = addGlyph(SAVE)
-      tooltip("Save File")
-    }
+    button(SAVE, "Save File")
 
     separator(VERTICAL)
 
-    button {
-      graphic = addGlyph(CUT)
-      tooltip("Cut")
-    }
+    button(CUT, "Cut")
+    button(COPY, "Copy")
+    button(PASTE, "Paste")
 
-    button {
-      graphic = addGlyph(COPY)
-      tooltip("Copy")
-    }
+    separator(VERTICAL)
 
-    button {
-      graphic = addGlyph(PASTE)
-      tooltip("Paste")
-    }
+    button(BOLD, "Bold")
+    button(ITALIC, "Italicize")
+    button(UNDERLINE, "Underline")
+    button(STRIKETHROUGH, "Strikethrough")
+
+    separator(VERTICAL)
   }
+
+  private fun ToolBar.button(icon: FontAwesomeIcon, tooltip: String, action: () -> Unit = { }) =
+    button {
+      prefWidth = 40.0
+      prefHeight = 40.0
+      graphic = addGlyph(icon)
+      tooltip(tooltip)
+      action(action)
+    }
 
   private fun addGlyph(glyph: FontAwesomeIcon) = glyphFactory.make(glyph)
 }
