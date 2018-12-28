@@ -81,10 +81,11 @@ class EditorController : Controller() {
 
   // TODO: Check the file extension first before opening
   private fun fileSelectionAction(fileItem: FileExplorerItem) {
-    val file = fileItem.file
-    if (file.isFile && !file.isImage) {
-      statusBarController.dispatchMessage("Opening: ${fileItem.file.name}")
-      contentArea.openTab(fileItem, file.name)
+    with(fileItem.file) {
+      if (isFile && !isImage) {
+        statusBarController.dispatchMessage("Opening: $name")
+        contentArea.openTab(fileItem, name)
+      }
     }
   }
 
