@@ -5,6 +5,7 @@ import javafx.scene.control.TextArea
 import javafx.stage.DirectoryChooser
 import javafx.stage.Stage
 import me.chill.models.FileExplorerItem
+import me.chill.ui.markdownarea.MarkdownTextArea
 import me.chill.utility.extensions.isImage
 import me.chill.views.editor.EditingArea
 import me.chill.views.fragments.ExitFragment
@@ -27,11 +28,15 @@ class EditorController : Controller() {
   // Populates the tree view with the folder structure
   fun openFolder(primaryStage: Stage) {
     // TODO: Open folder relative to the current directory
+    // TODO: Opening a new folder should close all open tabs
     val folder = DirectoryChooser()
       .apply { title = "Open Folder" }
       .showDialog(primaryStage)
 
-    folder?.let { folderView.loadFolder(it) } ?: return
+    folder ?: return
+
+    contentArea.clearArea()
+    folderView.loadFolder(folder)
   }
 
   fun saveFile() {
@@ -90,8 +95,8 @@ class EditorController : Controller() {
   }
 
   private fun openFileContents(file: File, tab: Tab) {
-    with(tab.content as TextArea) {
-      text = file.readText()
+    with(tab.content as MarkdownTextArea) {
+      replaceSelection(file.readText())
     }
   }
 }
