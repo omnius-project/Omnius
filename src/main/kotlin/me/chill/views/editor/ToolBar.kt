@@ -11,6 +11,10 @@ import tornadofx.*
 // TODO: Make the visibility of the tool bar an observable value
 class ToolBar : View() {
 
+  enum class Position {
+    TOP, LEFT
+  }
+
   private val controller: EditorController by inject()
   private val glyphFactory = GlyphFactory.Builder().glyphSize(24).build()
 
@@ -37,12 +41,6 @@ class ToolBar : View() {
     button(STRIKETHROUGH, "Strikethrough")
 
     separator(VERTICAL)
-  }
-
-  fun toggleVisibility() {
-    with(root) {
-      isVisible = !isVisible
-    }
   }
 
   private fun ToolBar.button(icon: FontAwesomeIcon, tooltip: String, action: () -> Unit = { }) =

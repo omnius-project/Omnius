@@ -8,6 +8,7 @@ import me.chill.controllers.EditorController
 import me.chill.keymap.Keymap
 import me.chill.keymap.Keymap.*
 import me.chill.utility.glyphtools.GlyphFactory
+import me.chill.views.editor.ToolBar.Position.*
 import tornadofx.*
 
 class MenuBar : View() {
@@ -73,9 +74,26 @@ class MenuBar : View() {
     }
 
     menu("View") {
-      checkmenuitem("Toggle toolbar").apply {
-        isSelected = true
-        action(controller::toggleToolBar)
+      menu("Toolbar") {
+
+        togglegroup {
+          radiomenuitem("Top").apply {
+            toggleGroup = this@togglegroup
+            isSelected = true
+            action { controller.moveToolBar(TOP) }
+          }
+          radiomenuitem("Left") {
+            toggleGroup = this@togglegroup
+            action { controller.moveToolBar(LEFT) }
+          }
+        }
+
+        separator()
+
+        checkmenuitem("Toggle toolbar").apply {
+          isSelected = true
+          action(controller::toggleToolBar)
+        }
       }
     }
   }

@@ -1,29 +1,38 @@
 package me.chill.controllers
 
+import javafx.geometry.Orientation.HORIZONTAL
+import javafx.geometry.Orientation.VERTICAL
 import javafx.scene.control.Tab
+import javafx.scene.layout.VBox
 import javafx.stage.DirectoryChooser
 import javafx.stage.Stage
 import me.chill.models.FileExplorerItem
 import me.chill.ui.markdownarea.MarkdownEditingArea
 import me.chill.utility.extensions.isImage
 import me.chill.views.editor.EditingArea
+import me.chill.views.editor.Editor
 import me.chill.views.editor.ToolBar
+import me.chill.views.editor.ToolBar.Position.LEFT
+import me.chill.views.editor.ToolBar.Position.TOP
 import me.chill.views.fragments.ExitFragment
 import tornadofx.Controller
+import tornadofx.add
 import java.io.File
 
 // TODO: Split out the controllers for the editing area
 class EditorController : Controller() {
 
+  // Has to be lazily initialized because the view cannot be called before the view is initialized
+  private val editor by lazy { find<Editor>() }
+
   private val editingArea = find<EditingArea>()
   private val folderView = editingArea.folderStructure
   private val contentArea = editingArea.tabContentArea
-  private val toolbar = find<ToolBar>()
+  private val toolBar = find<ToolBar>()
 
   private val statusBarController = find<StatusBarController>()
 
   init {
-    println("Creating editor controller")
     folderView.onDoubleClick(this::fileSelectionAction)
     contentArea.setOnOpenAction { fileItem, tab -> openFileContents(fileItem.file, tab) }
   }
@@ -86,8 +95,29 @@ class EditorController : Controller() {
     println("Pasting")
   }
 
+  // Toggles the visibility of the tool bar
   fun toggleToolBar() {
-    toolbar.toggleVisibility()
+    with(toolBar.root) {
+      isVisible = !isVisible
+    }
+  }
+
+  fun moveToolBar(position: ToolBar.Position) {
+    with(editor.root) {
+      with(toolBar.root) {
+        when (position) {
+          TOP -> {
+            orientation = HORIZONTAL
+            top.add(this)
+          }
+          LEFT -> {
+            if (left == null) left = VBox()
+            orientation = VERTICAL
+            left.add(this)
+          }
+        }
+      }
+    }
   }
 
   // TODO: Check the file extension first before opening

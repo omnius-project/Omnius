@@ -16,10 +16,6 @@ class Editor : View("Omnius") {
 
   private val controller: EditorController by inject()
 
-  init {
-    println("Creating editor view")
-  }
-
   override val root = borderpane {
     minWidth = 1000.0
     minHeight = 800.0
