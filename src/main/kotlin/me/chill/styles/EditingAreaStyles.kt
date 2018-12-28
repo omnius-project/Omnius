@@ -3,6 +3,7 @@ package me.chill.styles
 import javafx.scene.Cursor.HAND
 import javafx.scene.paint.Color.TRANSPARENT
 import me.chill.styles.Styles.Companion.bg
+import me.chill.styles.Styles.Companion.subtleGrey
 import tornadofx.Stylesheet
 import tornadofx.box
 import tornadofx.c
@@ -21,6 +22,7 @@ class EditingAreaStyles : Stylesheet() {
     }
 
     select(".tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator") {
+      borderWidth += box(0.px)
       borderColor += box(TRANSPARENT)
     }
 
@@ -57,6 +59,14 @@ class EditingAreaStyles : Stylesheet() {
 
     select(".tab-label") {
       labelPadding = box(0.px, 10.px, 0.px, 10.px)
+    }
+
+    select(".lineno") {
+      backgroundColor += TRANSPARENT
+      borderColor += box(TRANSPARENT, subtleGrey, TRANSPARENT, TRANSPARENT)
+      borderWidth += box(0.px, 1.px, 0.px, 0.px)
+      fontSize = 16.px
+      fontFamily = "Source Code Pro"
     }
   }
 }

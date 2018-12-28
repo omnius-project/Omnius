@@ -1,6 +1,5 @@
 package me.chill.styles
 
-import javafx.scene.paint.Color
 import javafx.scene.paint.Color.WHITE
 import tornadofx.Stylesheet
 import tornadofx.box

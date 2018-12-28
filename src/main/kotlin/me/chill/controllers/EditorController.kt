@@ -5,6 +5,7 @@ import javafx.scene.control.TextArea
 import javafx.stage.DirectoryChooser
 import javafx.stage.Stage
 import me.chill.models.FileExplorerItem
+import me.chill.ui.markdownarea.MarkdownEditingArea
 import me.chill.ui.markdownarea.MarkdownTextArea
 import me.chill.utility.extensions.isImage
 import me.chill.views.editor.EditingArea
@@ -95,7 +96,7 @@ class EditorController : Controller() {
   }
 
   private fun openFileContents(file: File, tab: Tab) {
-    with(tab.content as MarkdownTextArea) {
+    with((tab.content as MarkdownEditingArea).content) {
       replaceSelection(file.readText())
     }
   }

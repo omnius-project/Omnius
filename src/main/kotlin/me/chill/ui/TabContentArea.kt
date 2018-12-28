@@ -20,6 +20,12 @@ class TabContentArea<F : Node, CT>(private val contentType: KClass<F>) : TabPane
     onOpenAction = action
   }
 
+  // TODO: Function should save the open tabs to be restored the next time the same folder is opened
+  fun clearArea() {
+    openTabs.clear()
+    tabs.clear()
+  }
+
   fun openTab(item: CT, title: String) {
     val tab = Tab(title)
       .apply { content = contentType.constructors.first().call() }

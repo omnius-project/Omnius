@@ -10,8 +10,9 @@ import org.fxmisc.richtext.TextExt
 import org.fxmisc.richtext.model.SegmentOps
 import org.fxmisc.richtext.model.StyledSegment
 
-// TODO: Pass an EditableStyleDocument for allowing split window editing
-// TODO: When the user references an image in markdown, replace it with the actual image if the text is not in focus
+/**
+ * Rich text area for the markdown rendering
+ */
 class MarkdownTextArea : GenericStyledArea<ParagraphStyle, String, TextStyle>(
   ParagraphStyle(),
   { paragraph: TextFlow, style: ParagraphStyle -> paragraph.style = style.toCss() },
@@ -19,6 +20,8 @@ class MarkdownTextArea : GenericStyledArea<ParagraphStyle, String, TextStyle>(
   SegmentOps.styledTextOps<TextStyle>(),
   false,
   { seg -> createNode(seg) { text, style -> text.style = style.toCss() } }) {
+  // TODO: Pass an EditableStyleDocument for allowing split window editing
+  // TODO: When the user references an image in markdown, replace it with the actual image if the text is not in focus
 
   init {
     isWrapText = true
