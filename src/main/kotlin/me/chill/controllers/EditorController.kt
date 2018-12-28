@@ -85,6 +85,10 @@ class EditorController : Controller() {
     println("Pasting")
   }
 
+  fun toggleToolBar() {
+
+  }
+
   // TODO: Check the file extension first before opening
   private fun fileSelectionAction(fileItem: FileExplorerItem) {
     with(fileItem.file) {

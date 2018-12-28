@@ -13,5 +13,8 @@ enum class Keymap(val keyCombination: KeyCombination) {
   SAVE_FILE(keyCombination("Ctrl+S")),
   SAVE_ALL(keyCombination("Ctrl+Shift+S")),
   OPTIONS(keyCombination("Ctrl+Shift+O")),
-  EXIT(keyCombination("Ctrl+Shift+E"))
+  EXIT(keyCombination("Ctrl+Shift+E")),
+  BOLD(keyCombination("Ctrl+B")),
+  ITALIC(keyCombination("Ctrl+I")),
+  UNDERLINE(keyCombination("Ctrl+U")),
 }

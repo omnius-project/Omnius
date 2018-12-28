@@ -2,8 +2,8 @@ package me.chill.views.editor
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.*
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.PASTE
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.UNDO
+import javafx.scene.control.Menu
 import me.chill.controllers.EditorController
 import me.chill.keymap.Keymap
 import me.chill.keymap.Keymap.*
@@ -19,64 +19,38 @@ class MenuBar : View() {
   override val root = menubar {
     menu("File") {
       menu("New").apply {
-        item("Folder").apply {
-          graphic = addGlyph(FOLDER_ALT)
-        }
+        addItem("Folder", FOLDER_ALT)
 
         separator()
 
-        item("Markdown document").apply {
-          graphic = addGlyph(FILE)
-        }
-        item("Untitled document")
+        addItem("Markdown (.md)", FILE_ALT)
+        addItem("Untitled document", FILE_ALT)
       }
 
-      // TODO: Add options for new file and folder
-      item("Open folder").apply {
-        graphic = addGlyph(FOLDER_OPEN_ALT)
-        accelerator = OPEN_FOLDER.keyCombination
-        action { controller.openFolder(primaryStage) }
+      addItem("Open folder", FOLDER_OPEN_ALT, OPEN_FOLDER) {
+        controller.openFolder(primaryStage)
       }
 
       separator()
 
-      item("Save").apply {
-        graphic = addGlyph(SAVE)
-        accelerator = SAVE_FILE.keyCombination
-        action(controller::saveFile)
-      }
+      addItem("Save", SAVE, SAVE_FILE, controller::saveFile)
+      addItem("Save all", accelerator = SAVE_ALL, action = controller::saveAll)
 
-      item("Save All").apply {
-        accelerator = SAVE_ALL.keyCombination
-        action(controller::saveAll)
+      separator()
+
+      addItem("Import from VCS", action = controller::importFromVCS)
+      menu("Export as").apply {
+        addItem("PDF (.pdf)", action = controller::saveAll)
       }
 
       separator()
 
-      item("Import from VCS").action(controller::importFromVCS)
-      item("Export").action(controller::export)
-
-      separator()
-
-      item("Options").apply {
-        graphic = addGlyph(COG)
-        accelerator = OPTIONS.keyCombination
-        action(controller::launchOptions)
-      }
-
-      item("Exit").apply {
-        accelerator = EXIT.keyCombination
-        action(controller::exit)
-      }
+      addItem("Options", COG, OPTIONS, controller::launchOptions)
+      addItem("Exit", accelerator = EXIT, action = controller::exit)
     }
 
     menu("Edit") {
-      item("Undo").apply {
-        graphic = addGlyph(UNDO)
-        accelerator = Keymap.UNDO.keyCombination
-        action(controller::undoAction)
-      }
-
+      addItem("Undo", UNDO, Keymap.UNDO, controller::undoAction)
       item("Redo").apply {
         graphic = addGlyph(UNDO)
           .apply { rotate = 180.0 }
@@ -86,29 +60,33 @@ class MenuBar : View() {
 
       separator()
 
-      item("Cut").apply {
-        graphic = addGlyph(FontAwesomeIcon.CUT)
-        accelerator = Keymap.CUT.keyCombination
-        action(controller::cut)
-      }
+      addItem("Cut", FontAwesomeIcon.CUT, Keymap.CUT, controller::cut)
+      addItem("Copy", FontAwesomeIcon.COPY, Keymap.COPY, controller::copy)
+      addItem("Paste", FontAwesomeIcon.PASTE, Keymap.PASTE, controller::paste)
 
-      item("Copy").apply {
-        graphic = addGlyph(FontAwesomeIcon.COPY)
-        accelerator = Keymap.COPY.keyCombination
-        action(controller::copy)
-      }
+      separator()
 
-      item("Paste").apply {
-        graphic = addGlyph(PASTE)
-        accelerator = Keymap.PASTE.keyCombination
-        action(controller::paste)
-      }
+      addItem("Bold", FontAwesomeIcon.BOLD, Keymap.BOLD)
+      addItem("Italic", FontAwesomeIcon.ITALIC, Keymap.ITALIC)
+      addItem("Underline", FontAwesomeIcon.UNDERLINE, Keymap.UNDERLINE)
+      addItem("Strikethrough", STRIKETHROUGH)
     }
 
     menu("View") {
-      item("Visible Windows")
+      checkmenuitem("Toggle toolbar").action(controller::toggleToolBar)
     }
   }
+
+  private fun Menu.addItem(
+    title: String,
+    icon: FontAwesomeIcon? = null,
+    accelerator: Keymap? = null,
+    action: () -> Unit = { }) =
+    item(title).apply {
+      icon?.let { graphic = addGlyph(it) }
+      accelerator?.let { this@apply.accelerator = it.keyCombination }
+      action(action)
+    }
 
   private fun addGlyph(glyph: FontAwesomeIcon) = glyphFactory.make(glyph)
 }
