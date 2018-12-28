@@ -16,12 +16,13 @@ import org.fxmisc.richtext.model.StyledSegment
 class MarkdownTextArea : GenericStyledArea<ParagraphStyle, String, TextStyle>(
   ParagraphStyle(),
   { paragraph: TextFlow, style: ParagraphStyle -> paragraph.style = style.toCss() },
-  TextStyle.Builder().fontSize(14).fontFamily("monospace").textColor(BLACK).build(),
+  TextStyle.Builder().fontSize(20).fontFamily("Monaco", "Source Code Pro").textColor(BLACK).build(),
   SegmentOps.styledTextOps<TextStyle>(),
   false,
   { seg -> createNode(seg) { text, style -> text.style = style.toCss() } }) {
   // TODO: Pass an EditableStyleDocument for allowing split window editing
   // TODO: When the user references an image in markdown, replace it with the actual image if the text is not in focus
+  // TODO: Quotes get aligned to the right automatically
 
   init {
     isWrapText = true

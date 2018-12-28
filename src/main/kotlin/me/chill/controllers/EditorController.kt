@@ -97,7 +97,10 @@ class EditorController : Controller() {
 
   private fun openFileContents(file: File, tab: Tab) {
     with((tab.content as MarkdownEditingArea).content) {
-      replaceSelection(file.readText())
+      replaceText(file.readText())
+      requestFocus()
+      moveTo(0)
+      requestFollowCaret()
     }
   }
 }
