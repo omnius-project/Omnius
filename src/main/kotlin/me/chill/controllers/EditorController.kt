@@ -27,14 +27,14 @@ class EditorController : Controller() {
   private val editor by lazy { find<Editor>() }
 
   private val editingArea = find<EditingArea>()
-  private val folderView = editingArea.folderStructure
+  private val fileExplorer = editingArea.folderStructure
   private val contentArea = editingArea.tabContentArea
   private val toolBar = find<ToolBar>()
 
   private val statusBarController = find<StatusBarController>()
 
   init {
-    folderView.onDoubleClick(this::fileSelectionAction)
+    fileExplorer.onDoubleClick(this::fileSelectionAction)
     contentArea.setOnOpenAction { fileItem, tab -> openFileContents(fileItem.file, tab) }
   }
 
@@ -48,7 +48,7 @@ class EditorController : Controller() {
     folder ?: return
 
     contentArea.clearArea()
-    folderView.loadFolder(folder)
+    fileExplorer.loadFolder(folder)
   }
 
   fun saveFile() {
@@ -103,6 +103,7 @@ class EditorController : Controller() {
     }
   }
 
+  // Moves the tool bar
   fun moveToolBar(position: ToolBar.Position) {
     with(editor.root) {
       with(toolBar.root) {

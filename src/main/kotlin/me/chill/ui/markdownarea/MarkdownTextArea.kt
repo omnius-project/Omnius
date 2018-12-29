@@ -16,7 +16,7 @@ import org.fxmisc.richtext.model.StyledSegment
 class MarkdownTextArea : GenericStyledArea<ParagraphStyle, String, TextStyle>(
   ParagraphStyle(),
   { paragraph: TextFlow, style: ParagraphStyle -> paragraph.style = style.toCss() },
-  TextStyle.Builder().fontSize(20).fontFamily("Monaco", "Source Code Pro").textColor(BLACK).build(),
+  TextStyle().fontSize(20).fontFamily("Monaco", "Source Code Pro").textColor(BLACK),
   SegmentOps.styledTextOps<TextStyle>(),
   false,
   { seg -> createNode(seg) { text, style -> text.style = style.toCss() } }) {
@@ -32,8 +32,7 @@ class MarkdownTextArea : GenericStyledArea<ParagraphStyle, String, TextStyle>(
   companion object {
     fun createNode(
       segment: StyledSegment<String, TextStyle>,
-      applyStyle: (TextExt, TextStyle) -> Unit): Node? {
-      return StyledTextArea.createStyledTextNode(segment, applyStyle)
-    }
+      applyStyle: (TextExt, TextStyle) -> Unit): Node =
+      StyledTextArea.createStyledTextNode(segment, applyStyle)
   }
 }

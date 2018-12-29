@@ -3,27 +3,73 @@ package me.chill.ui.markdownarea
 import javafx.scene.paint.Color
 
 class TextStyle private constructor(
-  private val bold: Boolean?,
-  private val italic: Boolean?,
-  private val underline: Boolean?,
-  private val strikethrough: Boolean?,
-  private val fontSize: Int?,
-  private val fontFamily: String?,
-  private val textColor: Color?,
-  private val backgroundColor: Color?) {
+  private var bold: Boolean?,
+  private var italic: Boolean?,
+  private var underline: Boolean?,
+  private var strikethrough: Boolean?,
+  private var fontSize: Int?,
+  private var fontFamily: String?,
+  private var textColor: Color?,
+  private var backgroundColor: Color?) {
+
+  constructor() : this(null, null, null, null, null, null, null, null)
+
+  fun bold(bold: Boolean): TextStyle {
+    this.bold = bold
+    return this
+  }
+
+  fun italic(italic: Boolean): TextStyle {
+    this.italic = italic
+    return this
+  }
+
+  fun underline(underline: Boolean): TextStyle {
+    this.underline = underline
+    return this
+  }
+
+  fun strikethrough(strikethrough: Boolean): TextStyle {
+    this.strikethrough = strikethrough
+    return this
+  }
+
+  fun fontSize(fontSize: Int): TextStyle {
+    this.fontSize = fontSize
+    return this
+  }
+
+  fun fontFamily(vararg fontFamily: String): TextStyle {
+    this.fontFamily = fontFamily.joinToString(", ") { "\"$it\"" }
+    return this
+  }
+
+  fun textColor(textColor: Color): TextStyle {
+    this.textColor = textColor
+    return this
+  }
+
+  fun backgroundColor(backgroundColor: Color): TextStyle {
+    this.backgroundColor = backgroundColor
+    return this
+  }
 
   fun toCss(): String {
     val css = StringBuilder()
-    bold?.let { css.append(createBooleanCssRule("font-weight", "bold", "normal", it)) }
-    italic?.let { css.append(createBooleanCssRule("font-style", "italic", "normal", it)) }
-    underline?.let { css.append(createBooleanCssRule("underline", true, false, it)) }
-    strikethrough?.let { css.append(createBooleanCssRule("strikethrough", true, false, it)) }
-    fontSize?.let { css.append(createCssRule("font-size", it)) }
-    fontFamily?.let { css.append(createCssRule("font-family", it)) }
-    textColor?.let { css.append(createCssRule("fill", cssColor(it))) }
-    backgroundColor?.let { css.append(createCssRule("background-color", cssColor(it))) }
+    css.appendCss(bold) { createBooleanCssRule("font-weight", "bold", "normal", it) }
+    css.appendCss(italic) { createBooleanCssRule("font-style", "italic", "normal", it) }
+    css.appendCss(underline) { createBooleanCssRule("underline", true, false, it) }
+    css.appendCss(strikethrough) { createBooleanCssRule("strikethrough", true, false, it) }
+    css.appendCss(fontSize) { createCssRule("font-size", it) }
+    css.appendCss(fontFamily) { createCssRule("font-family", it) }
+    css.appendCss(textColor) { createCssRule("fill", cssColor(it)) }
+    css.appendCss(backgroundColor) { createCssRule("background-color", cssColor(it)) }
 
     return css.toString()
+  }
+
+  private fun <T> StringBuilder.appendCss(element: T?, action: (T) -> String) {
+    element?.let { append(action(it)) }
   }
 
   private fun <T> createCssRule(rule: String, value: T) = "-fx-$rule: $value;\n"
@@ -36,58 +82,5 @@ class TextStyle private constructor(
     val green = (color.green * 255).toInt()
     val blue = (color.blue * 255).toInt()
     return "rgb($red, $green, $blue)"
-  }
-
-  class Builder {
-    private var bold: Boolean? = null
-    private var italic: Boolean? = null
-    private var underline: Boolean? = null
-    private var strikethrough: Boolean? = null
-    private var fontSize: Int? = null
-    private var fontFamily: String? = null
-    private var textColor: Color? = null
-    private var backgroundColor: Color? = null
-
-    fun bold(bold: Boolean): Builder {
-      this.bold = bold
-      return this
-    }
-
-    fun italic(italic: Boolean): Builder {
-      this.italic = italic
-      return this
-    }
-
-    fun underline(underline: Boolean): Builder {
-      this.underline = underline
-      return this
-    }
-
-    fun strikethrough(strikethrough: Boolean): Builder {
-      this.strikethrough = strikethrough
-      return this
-    }
-
-    fun fontSize(fontSize: Int): Builder {
-      this.fontSize = fontSize
-      return this
-    }
-
-    fun fontFamily(vararg fontFamily: String): Builder {
-      this.fontFamily = fontFamily.joinToString(", ") { "\"$it\"" }
-      return this
-    }
-
-    fun textColor(textColor: Color): Builder {
-      this.textColor = textColor
-      return this
-    }
-
-    fun backgroundColor(backgroundColor: Color): Builder {
-      this.backgroundColor = backgroundColor
-      return this
-    }
-
-    fun build() = TextStyle(bold, italic, underline, strikethrough, fontSize, fontFamily, textColor, backgroundColor)
   }
 }
