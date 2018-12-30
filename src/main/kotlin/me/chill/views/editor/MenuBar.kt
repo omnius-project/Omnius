@@ -2,6 +2,7 @@ package me.chill.views.editor
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.UNDO
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
 import javafx.scene.control.Menu
 import javafx.scene.input.KeyCombination
 import me.chill.controllers.EditorController
@@ -13,6 +14,7 @@ import me.chill.utility.glyphtools.GlyphFactory
 import me.chill.views.editor.ToolBar.Position.LEFT
 import me.chill.views.editor.ToolBar.Position.TOP
 import tornadofx.*
+import tornadofx.WizardStyles.Companion.graphic
 
 class MenuBar : View(), ActionMapObservable {
 
@@ -62,11 +64,8 @@ class MenuBar : View(), ActionMapObservable {
 
     menu("Edit") {
       addItem(ActionMap.UNDO)
-      item("Redo").apply {
-        graphic = addGlyph(UNDO)
-          .apply { rotate = 180.0 }
-        accelerator = REDO.shortCut
-//        action(controller::redoAction)
+      addItem(REDO) {
+        rotate = 180.0
       }
 
       separator()
@@ -111,22 +110,33 @@ class MenuBar : View(), ActionMapObservable {
   private fun Menu.addItem(
     title: String,
     icon: FontAwesomeIcon? = null,
+    iconProperties: FontAwesomeIconView.() -> Unit,
     accelerator: KeyCombination? = null,
     actionMap: ActionMap) =
     item(title).apply {
-      icon?.let { graphic = addGlyph(it) }
+      icon?.let { graphic = addGlyph(it).apply(iconProperties) }
       accelerator?.let { this@apply.accelerator = it }
       action {
         notifyObservers(actionMap)
       }
     }
 
-  private fun Menu.addItem(actionMap: ActionMap) =
-    with(actionMap) { addItem(actionName, icon, shortCut, actionMap) }
+  private fun Menu.addItem(
+    actionMap: ActionMap,
+    iconProperties: FontAwesomeIconView.() -> Unit = {  }) =
+    with(actionMap) { addItem(actionName, icon, iconProperties, shortCut, actionMap) }
 
-  private fun Menu.addListItem(actionMap: ActionMap) =
+  private fun Menu.addListItem(
+    actionMap: ActionMap,
+    iconProperties: FontAwesomeIconView.() -> Unit = {  }) =
     with(actionMap) {
-      addItem(actionName.substringAfter(this@addListItem.text), icon, shortCut, actionMap)
+      addItem(
+        actionName.substringAfter(this@addListItem.text),
+        icon,
+        iconProperties,
+        shortCut,
+        actionMap
+      )
     }
 
   private fun addGlyph(glyph: FontAwesomeIcon) = glyphFactory.make(glyph)
