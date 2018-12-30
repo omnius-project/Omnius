@@ -1,14 +1,14 @@
 package me.chill.views.editor
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.*
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.UNDO
 import javafx.scene.control.Menu
+import javafx.scene.input.KeyCombination
 import me.chill.controllers.EditorController
-import me.chill.keymap.Keymap
-import me.chill.keymap.Keymap.*
+import me.chill.keymap.ActionMap
 import me.chill.utility.glyphtools.GlyphFactory
-import me.chill.views.editor.ToolBar.Position.*
+import me.chill.views.editor.ToolBar.Position.LEFT
+import me.chill.views.editor.ToolBar.Position.TOP
 import tornadofx.*
 
 class MenuBar : View() {
@@ -20,57 +20,55 @@ class MenuBar : View() {
   override val root = menubar {
     menu("File") {
       menu("New").apply {
-        addItem("Folder", FOLDER_ALT)
+        addListItem(ActionMap.NEW_FOLDER)
 
         separator()
 
-        addItem("Markdown (.md)", FILE_ALT)
-        addItem("Untitled document", FILE_ALT)
+        addListItem(ActionMap.NEW_MARKDOWN_FILE)
+        addListItem(ActionMap.NEW_UNTITLED_FILE)
       }
 
-      addItem("Open folder", FOLDER_OPEN_ALT, OPEN_FOLDER) {
+      addItem(ActionMap.OPEN_FOLDER) {
         controller.openFolder(primaryStage)
       }
 
       separator()
 
-      addItem("Save", SAVE, SAVE_FILE, controller::saveFile)
-      addItem("Save all", accelerator = SAVE_ALL, action = controller::saveAll)
+      addItem(ActionMap.SAVE_FILE, controller::saveFile)
+      addItem(ActionMap.SAVE_ALL, action = controller::saveAll)
 
       separator()
 
-      addItem("Import from VCS", action = controller::importFromVCS)
-      menu("Export as").apply {
-        addItem("PDF (.pdf)", action = controller::saveAll)
-      }
+      addItem(ActionMap.IMPORT_VCS, controller::importFromVCS)
+      addItem(ActionMap.EXPORT_PDF)
 
       separator()
 
-      addItem("Options", COG, OPTIONS, controller::launchOptions)
-      addItem("Exit", accelerator = EXIT, action = controller::exit)
+      addItem(ActionMap.OPTIONS, controller::launchOptions)
+      addItem(ActionMap.EXIT, controller::exit)
     }
 
     menu("Edit") {
-      addItem("Undo", UNDO, Keymap.UNDO, controller::undoAction)
+      addItem(ActionMap.UNDO, controller::undoAction)
       item("Redo").apply {
         graphic = addGlyph(UNDO)
           .apply { rotate = 180.0 }
-        accelerator = REDO.keyCombination
+        accelerator = ActionMap.REDO.shortCut
         action(controller::redoAction)
       }
 
       separator()
 
-      addItem("Cut", FontAwesomeIcon.CUT, Keymap.CUT, controller::cut)
-      addItem("Copy", FontAwesomeIcon.COPY, Keymap.COPY, controller::copy)
-      addItem("Paste", FontAwesomeIcon.PASTE, Keymap.PASTE, controller::paste)
+      addItem(ActionMap.CUT, action = controller::cut)
+      addItem(ActionMap.COPY, action = controller::copy)
+      addItem(ActionMap.PASTE, action = controller::paste)
 
       separator()
 
-      addItem("Bold", FontAwesomeIcon.BOLD, Keymap.BOLD)
-      addItem("Italic", FontAwesomeIcon.ITALIC, Keymap.ITALIC)
-      addItem("Underline", FontAwesomeIcon.UNDERLINE, Keymap.UNDERLINE)
-      addItem("Strikethrough", STRIKETHROUGH)
+      addItem(ActionMap.BOLD)
+      addItem(ActionMap.ITALIC)
+      addItem(ActionMap.UNDERLINE)
+      addItem(ActionMap.STRIKETHROUGH)
     }
 
     menu("View") {
@@ -101,12 +99,23 @@ class MenuBar : View() {
   private fun Menu.addItem(
     title: String,
     icon: FontAwesomeIcon? = null,
-    accelerator: Keymap? = null,
+    accelerator: KeyCombination? = null,
     action: () -> Unit = { }) =
     item(title).apply {
       icon?.let { graphic = addGlyph(it) }
-      accelerator?.let { this@apply.accelerator = it.keyCombination }
+      accelerator?.let { this@apply.accelerator = it }
       action(action)
+    }
+
+  private fun Menu.addItem(
+    actionMap: ActionMap,
+    action: () -> Unit = { }) = with(actionMap) { addItem(actionName, icon, shortCut, action) }
+
+  private fun Menu.addListItem(
+    actionMap: ActionMap,
+    action: () -> Unit = { }) =
+    with(actionMap) {
+      addItem(actionName.substringAfter(this@addListItem.text), icon, shortCut, action)
     }
 
   private fun addGlyph(glyph: FontAwesomeIcon) = glyphFactory.make(glyph)
