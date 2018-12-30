@@ -16,10 +16,8 @@ class Omnius : App(
   StatusBarStyles::class,
   Styles::class) {
 
-  private val editorController = find<EditorController>()
-
   init {
-    println("Omnius loaded")
+    find<EditorController>()
   }
 
   override fun start(stage: Stage) {

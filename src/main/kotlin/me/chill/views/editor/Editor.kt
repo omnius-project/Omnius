@@ -5,7 +5,8 @@ import javafx.scene.control.TabPane
 import me.chill.models.FileExplorerItem
 import me.chill.ui.FolderTreeView
 import me.chill.ui.TabContentArea
-import me.chill.ui.markdownarea.MarkdownEditingArea
+import me.chill.ui.markdownarea.MarkdownArea
+import tornadofx.Stylesheet.Companion.tabContentArea
 import tornadofx.View
 import tornadofx.borderpane
 import tornadofx.splitpane
@@ -18,7 +19,7 @@ class Editor : View("Omnius") {
   private val toolBar: ToolBar by inject()
   private val statusBar: StatusBar by inject()
   lateinit var fileExplorer: FolderTreeView
-  lateinit var tabContentArea: TabContentArea<MarkdownEditingArea, FileExplorerItem>
+  val markdownArea = find<MarkdownArea>()
 
   override val root = borderpane {
     top = vbox {
@@ -37,9 +38,7 @@ class Editor : View("Omnius") {
       // TODO: Load the prior open folder contents from last use
       // TODO: Allow the tabs to be re-arranged
       // TODO: Bind the cursor position in the text area to the status bar to show where the cursor is
-      tabContentArea = TabContentArea<MarkdownEditingArea, FileExplorerItem>(MarkdownEditingArea::class)
-        .apply { tabClosingPolicy = TabPane.TabClosingPolicy.ALL_TABS }
-      add(tabContentArea)
+      add(markdownArea)
     }
 
     bottom(statusBar::class)

@@ -11,9 +11,7 @@ import me.chill.actionmap.ActionMap.*
 import me.chill.actionmap.ActionMapObserver
 import me.chill.models.FileExplorerItem
 import me.chill.ui.FolderTreeView
-import me.chill.ui.TabContentArea
-import me.chill.ui.markdownarea.MarkdownEditingArea
-import me.chill.ui.markdownarea.MarkdownTextArea
+import me.chill.ui.markdownarea.MarkdownArea
 import me.chill.utility.extensions.isImage
 import me.chill.views.editor.Editor
 import me.chill.views.editor.MenuBar
@@ -33,7 +31,7 @@ class EditorController : Controller(), ActionMapObserver {
   private val editor by lazy { find<Editor>() }
 
   private var fileExplorer: FolderTreeView
-  private var contentArea: TabContentArea<MarkdownEditingArea, FileExplorerItem>
+  private var markdownArea: MarkdownArea
   private val toolBar = find<ToolBar>()
   private val menuBar = find<MenuBar>()
 
@@ -41,16 +39,43 @@ class EditorController : Controller(), ActionMapObserver {
 
   init {
     fileExplorer = editor.fileExplorer
-    contentArea = editor.tabContentArea
+    markdownArea = editor.markdownArea
 
     fileExplorer.onDoubleClick(this::fileSelectionAction)
-    contentArea.setOnOpenAction { fileItem, tab -> openFileContents(fileItem.file, tab) }
+    markdownArea.onOpen { fileExplorerItem, tab -> openFileContents(fileExplorerItem.file, tab) }
 
     toolBar.addObserver(this)
     menuBar.addObserver(this)
   }
 
   override fun update(actionMap: ActionMap) = actionMapAction(actionMap)
+
+  private fun actionMapAction(actionMap: ActionMap) {
+    when (actionMap) {
+      OPEN_FOLDER -> openFolder(primaryStage)
+      CUT -> cut()
+      COPY -> copy()
+      PASTE -> paste()
+      UNDO -> undo()
+      REDO -> redo()
+      SAVE_FILE -> saveFile()
+      SAVE_ALL -> saveAll()
+      OPTIONS -> launchOptions()
+      EXIT -> exit()
+      BOLD -> TODO()
+      ITALIC -> TODO()
+      UNDERLINE -> TODO()
+      NEW_FOLDER -> TODO()
+      NEW_MARKDOWN_FILE -> TODO()
+      NEW_UNTITLED_FILE -> TODO()
+      IMPORT_VCS -> TODO()
+      EXPORT_PDF -> TODO()
+      STRIKETHROUGH -> TODO()
+      MOVE_TOOLBAR_TOP -> moveToolBar(TOP)
+      MOVE_TOOLBAR_LEFT -> moveToolBar(LEFT)
+      TOGGLE_TOOBAR_VISIBILITY -> toggleToolBar()
+    }
+  }
 
   // Populates the tree view with the folder structure
   private fun openFolder(primaryStage: Stage) {
@@ -61,7 +86,7 @@ class EditorController : Controller(), ActionMapObserver {
 
     folder ?: return
 
-    contentArea.clearArea()
+    markdownArea.root.clearArea()
     fileExplorer.loadFolder(folder)
   }
 
@@ -90,25 +115,15 @@ class EditorController : Controller(), ActionMapObserver {
     find<ExitFragment>().openModal(resizable = false)
   }
 
-  private fun undoAction() {
-    performActionInMarkdownArea { undo() }
-  }
+  private fun undo() = markdownArea.undo()
 
-  private fun redoAction() {
-    performActionInMarkdownArea { redo() }
-  }
+  private fun redo() = markdownArea.redo()
 
-  private fun cut() {
-    performActionInMarkdownArea { cut() }
-  }
+  private fun cut() = markdownArea.cut()
 
-  private fun copy() {
-    performActionInMarkdownArea { copy() }
-  }
+  private fun copy() = markdownArea.copy()
 
-  private fun paste() {
-    performActionInMarkdownArea { paste() }
-  }
+  private fun paste() = markdownArea.paste()
 
   // Toggles the visibility of the tool bar
   private fun toggleToolBar() {
@@ -141,53 +156,18 @@ class EditorController : Controller(), ActionMapObserver {
     }
   }
 
-  private fun getCurrentTabMarkdownArea() = (contentArea.getCurrentTab().content as MarkdownEditingArea).content
-
-  private fun performActionInMarkdownArea(action: MarkdownTextArea.() -> Unit) {
-    with(getCurrentTabMarkdownArea()) {
-      if (isFocused) action()
-    }
-  }
-
   // TODO: Check the file extension first before opening
   private fun fileSelectionAction(fileItem: FileExplorerItem) {
     with(fileItem.file) {
       if (isFile && !isImage) {
         statusBarController.dispatchMessage("Opening: $name")
-        contentArea.openTab(fileItem, name)
+        markdownArea.root.openTab(fileItem, name)
       }
     }
   }
 
-  private fun actionMapAction(actionMap: ActionMap) {
-    when (actionMap) {
-      OPEN_FOLDER -> openFolder(primaryStage)
-      CUT -> cut()
-      COPY -> copy()
-      PASTE -> paste()
-      UNDO -> undoAction()
-      REDO -> redoAction()
-      SAVE_FILE -> saveFile()
-      SAVE_ALL -> saveAll()
-      OPTIONS -> launchOptions()
-      EXIT -> exit()
-      BOLD -> TODO()
-      ITALIC -> TODO()
-      UNDERLINE -> TODO()
-      NEW_FOLDER -> TODO()
-      NEW_MARKDOWN_FILE -> TODO()
-      NEW_UNTITLED_FILE -> TODO()
-      IMPORT_VCS -> TODO()
-      EXPORT_PDF -> TODO()
-      STRIKETHROUGH -> TODO()
-      MOVE_TOOLBAR_TOP -> moveToolBar(TOP)
-      MOVE_TOOLBAR_LEFT -> moveToolBar(LEFT)
-      TOGGLE_TOOBAR_VISIBILITY -> toggleToolBar()
-    }
-  }
-
   private fun openFileContents(file: File, tab: Tab) {
-    with((tab.content as MarkdownEditingArea).content) {
+    with((tab.content as MarkdownArea.ScrollArea).content) {
       replaceText(file.readText())
       requestFocus()
       moveTo(0)
