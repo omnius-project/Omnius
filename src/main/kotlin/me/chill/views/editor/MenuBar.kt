@@ -6,69 +6,81 @@ import javafx.scene.control.Menu
 import javafx.scene.input.KeyCombination
 import me.chill.controllers.EditorController
 import me.chill.keymap.ActionMap
+import me.chill.keymap.ActionMap.*
+import me.chill.listeners.ActionMapObservable
+import me.chill.listeners.ActionMapObserver
 import me.chill.utility.glyphtools.GlyphFactory
 import me.chill.views.editor.ToolBar.Position.LEFT
 import me.chill.views.editor.ToolBar.Position.TOP
 import tornadofx.*
 
-class MenuBar : View() {
+class MenuBar : View(), ActionMapObservable {
 
-  private val controller: EditorController by inject()
+  private val listeners = mutableListOf<ActionMapObserver>()
   private val glyphFactory = GlyphFactory.Builder().build()
 
-  // TODO: Make a keymap system
+  override fun addObserver(actionMapObserver: ActionMapObserver) {
+    listeners.add(actionMapObserver)
+  }
+
+  override fun removeObserver(actionMapObserver: ActionMapObserver) {
+    listeners.remove(actionMapObserver)
+  }
+
+  override fun notifyObservers(actionMap: ActionMap) {
+    listeners.forEach { it.update(actionMap) }
+  }
+
   override val root = menubar {
     menu("File") {
       menu("New").apply {
-        addListItem(ActionMap.NEW_FOLDER)
+        addListItem(NEW_FOLDER)
 
         separator()
 
-        addListItem(ActionMap.NEW_MARKDOWN_FILE)
-        addListItem(ActionMap.NEW_UNTITLED_FILE)
+        addListItem(NEW_MARKDOWN_FILE)
+        addListItem(NEW_UNTITLED_FILE)
       }
 
-      addItem(ActionMap.OPEN_FOLDER) {
-        controller.openFolder(primaryStage)
-      }
+      addItem(OPEN_FOLDER)
 
       separator()
 
-      addItem(ActionMap.SAVE_FILE, controller::saveFile)
-      addItem(ActionMap.SAVE_ALL, action = controller::saveAll)
+      addItem(SAVE_FILE)
+      addItem(SAVE_ALL)
 
       separator()
 
-      addItem(ActionMap.IMPORT_VCS, controller::importFromVCS)
-      addItem(ActionMap.EXPORT_PDF)
+      addItem(IMPORT_VCS)
+      addItem(EXPORT_PDF)
 
       separator()
 
-      addItem(ActionMap.OPTIONS, controller::launchOptions)
-      addItem(ActionMap.EXIT, controller::exit)
+      addItem(OPTIONS)
+      addItem(EXIT)
     }
 
     menu("Edit") {
-      addItem(ActionMap.UNDO, controller::undoAction)
+      addItem(ActionMap.UNDO)
       item("Redo").apply {
         graphic = addGlyph(UNDO)
           .apply { rotate = 180.0 }
-        accelerator = ActionMap.REDO.shortCut
-        action(controller::redoAction)
+        accelerator = REDO.shortCut
+//        action(controller::redoAction)
       }
 
       separator()
 
-      addItem(ActionMap.CUT, action = controller::cut)
-      addItem(ActionMap.COPY, action = controller::copy)
-      addItem(ActionMap.PASTE, action = controller::paste)
+      addItem(CUT)
+      addItem(COPY)
+      addItem(PASTE)
 
       separator()
 
-      addItem(ActionMap.BOLD)
-      addItem(ActionMap.ITALIC)
-      addItem(ActionMap.UNDERLINE)
-      addItem(ActionMap.STRIKETHROUGH)
+      addItem(BOLD)
+      addItem(ITALIC)
+      addItem(UNDERLINE)
+      addItem(STRIKETHROUGH)
     }
 
     menu("View") {
@@ -78,11 +90,11 @@ class MenuBar : View() {
           radiomenuitem("Top").apply {
             toggleGroup = this@togglegroup
             isSelected = true
-            action { controller.moveToolBar(TOP) }
+//            action { controller.moveToolBar(TOP) }
           }
           radiomenuitem("Left") {
             toggleGroup = this@togglegroup
-            action { controller.moveToolBar(LEFT) }
+//            action { controller.moveToolBar(LEFT) }
           }
         }
 
@@ -90,7 +102,7 @@ class MenuBar : View() {
 
         checkmenuitem("Toggle toolbar").apply {
           isSelected = true
-          action(controller::toggleToolBar)
+//          action(controller::toggleToolBar)
         }
       }
     }
@@ -100,22 +112,21 @@ class MenuBar : View() {
     title: String,
     icon: FontAwesomeIcon? = null,
     accelerator: KeyCombination? = null,
-    action: () -> Unit = { }) =
+    actionMap: ActionMap) =
     item(title).apply {
       icon?.let { graphic = addGlyph(it) }
       accelerator?.let { this@apply.accelerator = it }
-      action(action)
+      action {
+        notifyObservers(actionMap)
+      }
     }
 
-  private fun Menu.addItem(
-    actionMap: ActionMap,
-    action: () -> Unit = { }) = with(actionMap) { addItem(actionName, icon, shortCut, action) }
+  private fun Menu.addItem(actionMap: ActionMap) =
+    with(actionMap) { addItem(actionName, icon, shortCut, actionMap) }
 
-  private fun Menu.addListItem(
-    actionMap: ActionMap,
-    action: () -> Unit = { }) =
+  private fun Menu.addListItem(actionMap: ActionMap) =
     with(actionMap) {
-      addItem(actionName.substringAfter(this@addListItem.text), icon, shortCut, action)
+      addItem(actionName.substringAfter(this@addListItem.text), icon, shortCut, actionMap)
     }
 
   private fun addGlyph(glyph: FontAwesomeIcon) = glyphFactory.make(glyph)

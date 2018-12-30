@@ -6,11 +6,16 @@ import javafx.scene.control.Tab
 import javafx.scene.layout.AnchorPane
 import javafx.stage.DirectoryChooser
 import javafx.stage.Stage
+import me.chill.keymap.ActionMap
+import me.chill.keymap.ActionMap.*
+import me.chill.listeners.ActionMapObserver
 import me.chill.models.FileExplorerItem
 import me.chill.ui.markdownarea.MarkdownEditingArea
+import me.chill.ui.markdownarea.MarkdownTextArea
 import me.chill.utility.extensions.isImage
 import me.chill.views.editor.EditingArea
 import me.chill.views.editor.Editor
+import me.chill.views.editor.MenuBar
 import me.chill.views.editor.ToolBar
 import me.chill.views.editor.ToolBar.Position.LEFT
 import me.chill.views.editor.ToolBar.Position.TOP
@@ -21,22 +26,31 @@ import tornadofx.anchorpaneConstraints
 import java.io.File
 
 // TODO: Split out the controllers for the editing area
-class EditorController : Controller() {
+class EditorController : Controller(), ActionMapObserver {
 
   // Has to be lazily initialized because the view cannot be called before the view is initialized
   private val editor by lazy { find<Editor>() }
 
   private val editingArea = find<EditingArea>()
-  private val fileExplorer = editingArea.folderStructure
+  //  private val fileExplorer = editingArea.folderStructure
   private val contentArea = editingArea.tabContentArea
+
+  private val fileExplorer = editingArea.folderStructure
+
   private val toolBar = find<ToolBar>()
+  private val menuBar = find<MenuBar>()
 
   private val statusBarController = find<StatusBarController>()
 
   init {
+//    fileExplorer = editor.fileExplorer
     fileExplorer.onDoubleClick(this::fileSelectionAction)
     contentArea.setOnOpenAction { fileItem, tab -> openFileContents(fileItem.file, tab) }
+    menuBar.addObserver(this)
+    toolBar.addObserver(this)
   }
+
+  override fun update(actionMap: ActionMap) = actionMapAction(actionMap)
 
   // Populates the tree view with the folder structure
   fun openFolder(primaryStage: Stage) {
@@ -77,23 +91,23 @@ class EditorController : Controller() {
   }
 
   fun undoAction() {
-    println("Undoing action")
+    performActionInMarkdownArea { undo() }
   }
 
   fun redoAction() {
-    println("Redoing action")
+    performActionInMarkdownArea { redo() }
   }
 
   fun cut() {
-    println("Cutting")
+    performActionInMarkdownArea { cut() }
   }
 
   fun copy() {
-    println("Copying")
+    performActionInMarkdownArea { copy() }
   }
 
   fun paste() {
-    println("Pasting")
+    performActionInMarkdownArea { paste() }
   }
 
   // Toggles the visibility of the tool bar
@@ -127,6 +141,14 @@ class EditorController : Controller() {
     }
   }
 
+  private fun getCurrentTabMarkdownArea() = (contentArea.getCurrentTab().content as MarkdownEditingArea).content
+
+  private fun performActionInMarkdownArea(action: MarkdownTextArea.() -> Unit) {
+    with(getCurrentTabMarkdownArea()) {
+      if (isFocused) action()
+    }
+  }
+
   // TODO: Check the file extension first before opening
   private fun fileSelectionAction(fileItem: FileExplorerItem) {
     with(fileItem.file) {
@@ -134,6 +156,30 @@ class EditorController : Controller() {
         statusBarController.dispatchMessage("Opening: $name")
         contentArea.openTab(fileItem, name)
       }
+    }
+  }
+
+  private fun actionMapAction(actionMap: ActionMap) {
+    when(actionMap) {
+      OPEN_FOLDER -> openFolder(primaryStage)
+      CUT -> cut()
+      COPY -> copy()
+      PASTE -> paste()
+      UNDO -> undoAction()
+      REDO -> redoAction()
+      SAVE_FILE -> saveFile()
+      SAVE_ALL -> saveAll()
+      OPTIONS -> launchOptions()
+      EXIT -> exit()
+      BOLD -> TODO()
+      ITALIC -> TODO()
+      UNDERLINE -> TODO()
+      NEW_FOLDER -> TODO()
+      NEW_MARKDOWN_FILE -> TODO()
+      NEW_UNTITLED_FILE -> TODO()
+      IMPORT_VCS -> TODO()
+      EXPORT_PDF -> TODO()
+      STRIKETHROUGH -> TODO()
     }
   }
 
