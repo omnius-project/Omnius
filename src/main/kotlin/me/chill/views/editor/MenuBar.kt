@@ -1,20 +1,15 @@
 package me.chill.views.editor
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.UNDO
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
 import javafx.scene.control.Menu
 import javafx.scene.input.KeyCombination
-import me.chill.controllers.EditorController
-import me.chill.keymap.ActionMap
-import me.chill.keymap.ActionMap.*
-import me.chill.listeners.ActionMapObservable
-import me.chill.listeners.ActionMapObserver
+import me.chill.actionmap.ActionMap
+import me.chill.actionmap.ActionMap.*
+import me.chill.actionmap.ActionMapObservable
+import me.chill.actionmap.ActionMapObserver
 import me.chill.utility.glyphtools.GlyphFactory
-import me.chill.views.editor.ToolBar.Position.LEFT
-import me.chill.views.editor.ToolBar.Position.TOP
 import tornadofx.*
-import tornadofx.WizardStyles.Companion.graphic
 
 class MenuBar : View(), ActionMapObservable {
 
@@ -36,64 +31,55 @@ class MenuBar : View(), ActionMapObservable {
   override val root = menubar {
     menu("File") {
       menu("New").apply {
-        addListItem(NEW_FOLDER)
+        listItem(NEW_FOLDER)
 
         separator()
 
-        addListItem(NEW_MARKDOWN_FILE)
-        addListItem(NEW_UNTITLED_FILE)
+        listItem(NEW_MARKDOWN_FILE)
+        listItem(NEW_UNTITLED_FILE)
       }
 
-      addItem(OPEN_FOLDER)
+      item(OPEN_FOLDER)
 
       separator()
 
-      addItem(SAVE_FILE)
-      addItem(SAVE_ALL)
+      items(SAVE_FILE, SAVE_ALL)
 
       separator()
 
-      addItem(IMPORT_VCS)
-      addItem(EXPORT_PDF)
+      items(IMPORT_VCS, EXPORT_PDF)
 
       separator()
 
-      addItem(OPTIONS)
-      addItem(EXIT)
+      items(OPTIONS, EXIT)
     }
 
     menu("Edit") {
-      addItem(ActionMap.UNDO)
-      addItem(REDO) {
-        rotate = 180.0
-      }
+      item(UNDO)
+      item(REDO) { rotate = 180.0 }
 
       separator()
 
-      addItem(CUT)
-      addItem(COPY)
-      addItem(PASTE)
+      items(COPY, CUT, PASTE)
 
       separator()
 
-      addItem(BOLD)
-      addItem(ITALIC)
-      addItem(UNDERLINE)
-      addItem(STRIKETHROUGH)
+      items(BOLD, ITALIC, UNDERLINE, STRIKETHROUGH)
     }
 
     menu("View") {
       menu("Toolbar") {
-
-        togglegroup {
-          radiomenuitem("Top").apply {
-            toggleGroup = this@togglegroup
-            isSelected = true
-//            action { controller.moveToolBar(TOP) }
-          }
-          radiomenuitem("Left") {
-            toggleGroup = this@togglegroup
-//            action { controller.moveToolBar(LEFT) }
+        menu("Position") {
+          togglegroup {
+            radiomenuitem("Top").apply {
+              toggleGroup = this@togglegroup
+              isSelected = true
+              action { notifyObservers(MOVE_TOOLBAR_TOP) }
+            }
+            radiomenuitem("Left") {
+              toggleGroup = this@togglegroup
+              action { notifyObservers(MOVE_TOOLBAR_LEFT) }
+            }
           }
         }
 
@@ -101,19 +87,19 @@ class MenuBar : View(), ActionMapObservable {
 
         checkmenuitem("Toggle toolbar").apply {
           isSelected = true
-//          action(controller::toggleToolBar)
+          action { notifyObservers(TOGGLE_TOOBAR_VISIBILITY) }
         }
       }
     }
   }
 
-  private fun Menu.addItem(
+  private fun Menu.item(
     title: String,
     icon: FontAwesomeIcon? = null,
     iconProperties: FontAwesomeIconView.() -> Unit,
     accelerator: KeyCombination? = null,
     actionMap: ActionMap) =
-    item(title).apply {
+    this@item.item(title).apply {
       icon?.let { graphic = addGlyph(it).apply(iconProperties) }
       accelerator?.let { this@apply.accelerator = it }
       action {
@@ -121,23 +107,29 @@ class MenuBar : View(), ActionMapObservable {
       }
     }
 
-  private fun Menu.addItem(
+  private fun Menu.item(
     actionMap: ActionMap,
     iconProperties: FontAwesomeIconView.() -> Unit = {  }) =
-    with(actionMap) { addItem(actionName, icon, iconProperties, shortCut, actionMap) }
+    with(actionMap) { this@item.item(actionName, icon, iconProperties, shortCut, actionMap) }
 
-  private fun Menu.addListItem(
+  private fun Menu.listItem(
     actionMap: ActionMap,
     iconProperties: FontAwesomeIconView.() -> Unit = {  }) =
     with(actionMap) {
-      addItem(
-        actionName.substringAfter(this@addListItem.text),
+      item(
+        extractActionName(this),
         icon,
         iconProperties,
         shortCut,
         actionMap
       )
     }
+
+  private fun Menu.items(vararg actionMaps: ActionMap) {
+    actionMaps.forEach { item(it) }
+  }
+
+  private fun Menu.extractActionName(actionMap: ActionMap) = actionMap.actionName.substringAfter(text)
 
   private fun addGlyph(glyph: FontAwesomeIcon) = glyphFactory.make(glyph)
 }

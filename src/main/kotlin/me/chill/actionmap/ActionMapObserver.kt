@@ -1,6 +1,4 @@
-package me.chill.listeners
-
-import me.chill.keymap.ActionMap
+package me.chill.actionmap
 
 interface ActionMapObserver {
   fun update(actionMap: ActionMap)

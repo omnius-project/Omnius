@@ -1,4 +1,4 @@
-package me.chill.keymap
+package me.chill.actionmap
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.*
@@ -31,5 +31,8 @@ enum class ActionMap(
   NEW_UNTITLED_FILE("New Untitled File", icon = FILE_ALT),
   IMPORT_VCS("Import From VCS"),
   EXPORT_PDF("Export As PDF (.pdf)"),
-  STRIKETHROUGH("Strikethrough", icon = FontAwesomeIcon.STRIKETHROUGH);
+  STRIKETHROUGH("Strikethrough", icon = FontAwesomeIcon.STRIKETHROUGH),
+  MOVE_TOOLBAR_TOP("Toolbar Position Top"),
+  MOVE_TOOLBAR_LEFT("Toolbar Position Left"),
+  TOGGLE_TOOBAR_VISIBILITY("Toggle Toolbar")
 }
