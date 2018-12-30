@@ -6,14 +6,15 @@ import javafx.scene.control.Tab
 import javafx.scene.layout.AnchorPane
 import javafx.stage.DirectoryChooser
 import javafx.stage.Stage
-import me.chill.keymap.ActionMap
-import me.chill.keymap.ActionMap.*
-import me.chill.listeners.ActionMapObserver
+import me.chill.actionmap.ActionMap
+import me.chill.actionmap.ActionMap.*
+import me.chill.actionmap.ActionMapObserver
 import me.chill.models.FileExplorerItem
+import me.chill.ui.FolderTreeView
+import me.chill.ui.TabContentArea
 import me.chill.ui.markdownarea.MarkdownEditingArea
 import me.chill.ui.markdownarea.MarkdownTextArea
 import me.chill.utility.extensions.isImage
-import me.chill.views.editor.EditingArea
 import me.chill.views.editor.Editor
 import me.chill.views.editor.MenuBar
 import me.chill.views.editor.ToolBar
@@ -31,29 +32,28 @@ class EditorController : Controller(), ActionMapObserver {
   // Has to be lazily initialized because the view cannot be called before the view is initialized
   private val editor by lazy { find<Editor>() }
 
-  private val editingArea = find<EditingArea>()
-  //  private val fileExplorer = editingArea.folderStructure
-  private val contentArea = editingArea.tabContentArea
-
-  private val fileExplorer = editingArea.folderStructure
-
+  private var fileExplorer: FolderTreeView
+  private var contentArea: TabContentArea<MarkdownEditingArea, FileExplorerItem>
   private val toolBar = find<ToolBar>()
   private val menuBar = find<MenuBar>()
 
   private val statusBarController = find<StatusBarController>()
 
   init {
-//    fileExplorer = editor.fileExplorer
+    fileExplorer = editor.fileExplorer
+    contentArea = editor.tabContentArea
+
     fileExplorer.onDoubleClick(this::fileSelectionAction)
     contentArea.setOnOpenAction { fileItem, tab -> openFileContents(fileItem.file, tab) }
-    menuBar.addObserver(this)
+
     toolBar.addObserver(this)
+    menuBar.addObserver(this)
   }
 
   override fun update(actionMap: ActionMap) = actionMapAction(actionMap)
 
   // Populates the tree view with the folder structure
-  fun openFolder(primaryStage: Stage) {
+  private fun openFolder(primaryStage: Stage) {
     // TODO: Open folder relative to the current directory
     val folder = DirectoryChooser()
       .apply { title = "Open Folder" }
@@ -65,60 +65,60 @@ class EditorController : Controller(), ActionMapObserver {
     fileExplorer.loadFolder(folder)
   }
 
-  fun saveFile() {
+  private fun saveFile() {
     println("Saving file")
   }
 
-  fun saveAll() {
+  private fun saveAll() {
     println("Saving all")
   }
 
-  fun importFromVCS() {
+  private fun importFromVCS() {
     println("Importing from VCS")
   }
 
-  fun export() {
+  private fun export() {
     println("Exporting")
   }
 
-  fun launchOptions() {
+  private fun launchOptions() {
     println("Launching options")
   }
 
-  fun exit() {
+  private fun exit() {
     // TODO: Check if work is saved
     find<ExitFragment>().openModal(resizable = false)
   }
 
-  fun undoAction() {
+  private fun undoAction() {
     performActionInMarkdownArea { undo() }
   }
 
-  fun redoAction() {
+  private fun redoAction() {
     performActionInMarkdownArea { redo() }
   }
 
-  fun cut() {
+  private fun cut() {
     performActionInMarkdownArea { cut() }
   }
 
-  fun copy() {
+  private fun copy() {
     performActionInMarkdownArea { copy() }
   }
 
-  fun paste() {
+  private fun paste() {
     performActionInMarkdownArea { paste() }
   }
 
   // Toggles the visibility of the tool bar
-  fun toggleToolBar() {
+  private fun toggleToolBar() {
     with(toolBar.root) {
       isVisible = !isVisible
     }
   }
 
   // Moves the tool bar
-  fun moveToolBar(position: ToolBar.Position) {
+  private fun moveToolBar(position: ToolBar.Position) {
     with(editor.root) {
       with(toolBar.root) {
         when (position) {
@@ -160,7 +160,7 @@ class EditorController : Controller(), ActionMapObserver {
   }
 
   private fun actionMapAction(actionMap: ActionMap) {
-    when(actionMap) {
+    when (actionMap) {
       OPEN_FOLDER -> openFolder(primaryStage)
       CUT -> cut()
       COPY -> copy()
@@ -180,6 +180,9 @@ class EditorController : Controller(), ActionMapObserver {
       IMPORT_VCS -> TODO()
       EXPORT_PDF -> TODO()
       STRIKETHROUGH -> TODO()
+      MOVE_TOOLBAR_TOP -> moveToolBar(TOP)
+      MOVE_TOOLBAR_LEFT -> moveToolBar(LEFT)
+      TOGGLE_TOOBAR_VISIBILITY -> toggleToolBar()
     }
   }
 

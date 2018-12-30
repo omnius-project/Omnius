@@ -7,3 +7,6 @@ private val imageExtensions = setOf("jpg", "jpeg", "tif", "gif", "png", "ico")
 
 val File.isImage: Boolean
   get() = imageExtensions.contains(extension)
+
+val File.isMarkdown: Boolean
+  get() = imageExtensions.any { it == "md" }

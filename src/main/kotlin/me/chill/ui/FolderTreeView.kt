@@ -2,8 +2,6 @@ package me.chill.ui
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.*
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
-import javafx.scene.control.SelectionModel
 import javafx.scene.control.TreeItem
 import javafx.scene.control.TreeView
 import me.chill.controllers.StatusBarController
@@ -37,10 +35,12 @@ class FolderTreeView : TreeView<FileExplorerItem>() {
 
   // TODO: Opening the folder should inform the user via progress bar in notification system
   fun loadFolder(folder: File) {
-    if (!isOpeningFile) {
-      statusBarController.dispatchMessage("Opening folder: ${folder.nameWithoutExtension}")
-      isOpeningFile = true
-      populateFolderView(folder)
+    with(folder) {
+      if (!isOpeningFile) {
+        statusBarController.dispatchMessage("Opening folder: $nameWithoutExtension")
+        isOpeningFile = true
+        populateFolderView(this)
+      }
     }
   }
 

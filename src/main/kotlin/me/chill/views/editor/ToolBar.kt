@@ -3,10 +3,10 @@ package me.chill.views.editor
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import javafx.geometry.Orientation.VERTICAL
 import javafx.scene.control.ToolBar
-import me.chill.keymap.ActionMap
-import me.chill.keymap.ActionMap.*
-import me.chill.listeners.ActionMapObservable
-import me.chill.listeners.ActionMapObserver
+import me.chill.actionmap.ActionMap
+import me.chill.actionmap.ActionMap.*
+import me.chill.actionmap.ActionMapObservable
+import me.chill.actionmap.ActionMapObserver
 import me.chill.utility.glyphtools.GlyphFactory
 import tornadofx.*
 
@@ -36,23 +36,11 @@ class ToolBar : View(), ActionMapObservable {
   override val root = toolbar {
     managedProperty().bind(visibleProperty())
 
-    button(NEW_UNTITLED_FILE)
-    button(OPEN_FOLDER)
-    button(SAVE_FILE)
-
+    buttons(NEW_UNTITLED_FILE, OPEN_FOLDER, SAVE_FILE)
     separator(VERTICAL)
-
-    button(CUT)
-    button(COPY)
-    button(PASTE)
-
+    buttons(CUT, COPY, PASTE)
     separator(VERTICAL)
-
-    button(BOLD)
-    button(ITALIC)
-    button(UNDERLINE)
-    button(STRIKETHROUGH)
-
+    buttons(BOLD, ITALIC, UNDERLINE, STRIKETHROUGH)
     separator(VERTICAL)
   }
 
@@ -66,6 +54,10 @@ class ToolBar : View(), ActionMapObservable {
         action { notifyObservers(actionMap) }
       }
     }
+
+  private fun ToolBar.buttons(vararg actionMaps: ActionMap) {
+    actionMaps.forEach { button(it) }
+  }
 
   private fun addGlyph(glyph: FontAwesomeIcon) = glyphFactory.make(glyph)
 }

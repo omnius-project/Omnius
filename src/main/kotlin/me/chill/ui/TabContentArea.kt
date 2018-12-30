@@ -26,6 +26,12 @@ class TabContentArea<F : Node, CT>(private val contentType: KClass<F>) : TabPane
     tabs.clear()
   }
 
+  fun getCurrentTab() = selectionModel.selectedItem
+
+  fun getCurrentTabData() = openTabs.first { it.value == getCurrentTab() }
+
+  fun getCurrentTabContent() = getCurrentTabData().key
+
   fun openTab(item: CT, title: String) {
     val tab = Tab(title)
       .apply { content = contentType.constructors.first().call() }
