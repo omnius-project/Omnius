@@ -27,20 +27,16 @@ import java.io.File
 // TODO: Split out the controllers for the editing area
 class EditorController : Controller(), ActionMapObserver {
 
-  // Has to be lazily initialized because the view cannot be called before the view is initialized
-  private val editor by lazy { find<Editor>() }
+  private val editor  = find<Editor>()
+  private val fileExplorer = editor.fileExplorer
+  private val markdownArea = editor.markdownArea
 
-  private var fileExplorer: FolderTreeView
-  private var markdownArea: MarkdownArea
   private val toolBar = find<ToolBar>()
   private val menuBar = find<MenuBar>()
 
   private val statusBarController = find<StatusBarController>()
 
   init {
-    fileExplorer = editor.fileExplorer
-    markdownArea = editor.markdownArea
-
     fileExplorer.onDoubleClick(this::fileSelectionAction)
     markdownArea.onOpen { fileExplorerItem, tab -> openFileContents(fileExplorerItem.file, tab) }
 

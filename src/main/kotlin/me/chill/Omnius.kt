@@ -1,6 +1,8 @@
 package me.chill
 
 import javafx.stage.Stage
+import javafx.stage.StageStyle.TRANSPARENT
+import javafx.stage.StageStyle.UNDECORATED
 import me.chill.controllers.EditorController
 import me.chill.styles.*
 import me.chill.views.editor.Editor
@@ -16,14 +18,14 @@ class Omnius : App(
   StatusBarStyles::class,
   Styles::class) {
 
-  init {
-    find<EditorController>()
-  }
+  init { find<EditorController>() }
 
   override fun start(stage: Stage) {
-    stage.isMaximized = true
-    stage.icons += resources.image("../../icon.png")
-    super.start(stage)
+    with(stage) {
+      isMaximized = true
+      icons += resources.image("../../icon.png")
+      super.start(this)
+    }
   }
 }
 
