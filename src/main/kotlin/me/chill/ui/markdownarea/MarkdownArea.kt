@@ -21,35 +21,17 @@ class MarkdownArea : View() {
     root.setOnOpenAction(openAction)
   }
 
-  fun copy() {
-    performActionInMarkdownArea {
-      getCurrentMarkdownArea().copy()
-    }
-  }
+  fun clearArea() = root.clearArea()
 
-  fun paste() {
-    performActionInMarkdownArea {
-      getCurrentMarkdownArea().paste()
-    }
-  }
+  fun copy() = performActionInMarkdownArea { copy() }
 
-  fun cut() {
-    performActionInMarkdownArea {
-      getCurrentMarkdownArea().cut()
-    }
-  }
+  fun paste() = performActionInMarkdownArea { paste() }
 
-  fun undo() {
-    performActionInMarkdownArea {
-      getCurrentMarkdownArea().undo()
-    }
-  }
+  fun cut() = performActionInMarkdownArea { cut() }
 
-  fun redo() {
-    performActionInMarkdownArea {
-      getCurrentMarkdownArea().redo()
-    }
-  }
+  fun undo() = performActionInMarkdownArea { undo() }
+
+  fun redo() = performActionInMarkdownArea { redo() }
 
   private fun getCurrentMarkdownArea() = (root.getCurrentTab().content as ScrollArea).content
 
@@ -57,8 +39,8 @@ class MarkdownArea : View() {
 
   private fun isMarkdownAreaInFocus() = hasAnyTabs() && getCurrentMarkdownArea().isFocused
 
-  private fun performActionInMarkdownArea(action: () -> Unit) {
-    if (isMarkdownAreaInFocus()) action()
+  private fun performActionInMarkdownArea(action: MarkdownTextArea.() -> Unit) {
+    if (isMarkdownAreaInFocus()) getCurrentMarkdownArea().action()
   }
 
 }

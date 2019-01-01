@@ -10,7 +10,6 @@ import me.chill.actionmap.ActionMap
 import me.chill.actionmap.ActionMap.*
 import me.chill.actionmap.ActionMapObserver
 import me.chill.models.FileExplorerItem
-import me.chill.ui.FolderTreeView
 import me.chill.ui.markdownarea.MarkdownArea
 import me.chill.utility.extensions.isImage
 import me.chill.views.editor.Editor
@@ -27,7 +26,7 @@ import java.io.File
 // TODO: Split out the controllers for the editing area
 class EditorController : Controller(), ActionMapObserver {
 
-  private val editor  = find<Editor>()
+  private val editor = find<Editor>()
   private val fileExplorer = editor.fileExplorer
   private val markdownArea = editor.markdownArea
 
@@ -82,7 +81,7 @@ class EditorController : Controller(), ActionMapObserver {
 
     folder ?: return
 
-    markdownArea.root.clearArea()
+    markdownArea.clearArea()
     fileExplorer.loadFolder(folder)
   }
 
