@@ -1,12 +1,7 @@
 package me.chill.views.editor
 
 import javafx.geometry.Orientation
-import javafx.scene.control.TabPane
-import me.chill.models.FileExplorerItem
 import me.chill.ui.FolderTreeView
-import me.chill.ui.TabContentArea
-import me.chill.ui.markdownarea.MarkdownArea
-import tornadofx.Stylesheet.Companion.tabContentArea
 import tornadofx.View
 import tornadofx.borderpane
 import tornadofx.splitpane

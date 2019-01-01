@@ -1,9 +1,10 @@
-package me.chill.ui.markdownarea
+package me.chill.views.editor
 
 import javafx.scene.control.Tab
 import javafx.scene.control.TabPane.TabClosingPolicy.ALL_TABS
 import me.chill.models.FileExplorerItem
 import me.chill.ui.TabContentArea
+import me.chill.ui.markdownarea.MarkdownTextArea
 import org.fxmisc.flowless.VirtualizedScrollPane
 import tornadofx.View
 

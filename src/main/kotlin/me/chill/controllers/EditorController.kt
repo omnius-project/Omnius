@@ -10,7 +10,7 @@ import me.chill.actionmap.ActionMap
 import me.chill.actionmap.ActionMap.*
 import me.chill.actionmap.ActionMapObserver
 import me.chill.models.FileExplorerItem
-import me.chill.ui.markdownarea.MarkdownArea
+import me.chill.views.editor.MarkdownArea
 import me.chill.utility.extensions.isImage
 import me.chill.views.editor.Editor
 import me.chill.views.editor.MenuBar
@@ -63,8 +63,8 @@ class EditorController : Controller(), ActionMapObserver {
       NEW_FOLDER -> TODO()
       NEW_MARKDOWN_FILE -> TODO()
       NEW_UNTITLED_FILE -> TODO()
-      IMPORT_VCS -> TODO()
-      EXPORT_PDF -> TODO()
+      IMPORT_VCS -> importFromVCS()
+      EXPORT_PDF -> export()
       STRIKETHROUGH -> TODO()
       MOVE_TOOLBAR_TOP -> moveToolBar(TOP)
       MOVE_TOOLBAR_LEFT -> moveToolBar(LEFT)
