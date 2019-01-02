@@ -1,14 +1,19 @@
 package me.chill.views.editor
 
-import javafx.geometry.Orientation
+import javafx.geometry.Orientation.HORIZONTAL
+import javafx.geometry.Orientation.VERTICAL
+import javafx.scene.layout.AnchorPane
+import me.chill.actionmap.ActionMap
+import me.chill.actionmap.ActionMap.*
+import me.chill.actionmap.ActionMapObserver
+import me.chill.models.EditorModel
 import me.chill.ui.FolderTreeView
-import tornadofx.View
-import tornadofx.borderpane
-import tornadofx.splitpane
-import tornadofx.vbox
+import me.chill.views.editor.ToolBar.Position.LEFT
+import me.chill.views.editor.ToolBar.Position.TOP
+import tornadofx.*
 
 // TODO: Add support for Jekyll specific sites aka editing the metadata of .md files
-class Editor : View("Omnius") {
+class Editor : View("Omnius"), ActionMapObserver {
 
   private val menuBar: MenuBar by inject()
   private val toolBar: ToolBar by inject()
@@ -16,13 +21,25 @@ class Editor : View("Omnius") {
   lateinit var fileExplorer: FolderTreeView
   val markdownArea = find<MarkdownArea>()
 
+  init {
+    EditorModel.INSTANCE.addObserver(this)
+  }
+
+  override fun update(actionMap: ActionMap) {
+    when (actionMap) {
+      MOVE_TOOLBAR_TOP -> moveToolBar(TOP)
+      MOVE_TOOLBAR_LEFT -> moveToolBar(LEFT)
+      TOGGLE_TOOBAR_VISIBILITY -> toggleToolBarVisibility()
+    }
+  }
+
   override val root = borderpane {
     top = vbox {
       add(menuBar)
       add(toolBar)
     }
 
-    center = splitpane(Orientation.HORIZONTAL) {
+    center = splitpane(HORIZONTAL) {
       setDividerPositions(0.1, 0.9)
 
       fileExplorer = FolderTreeView()
@@ -37,5 +54,33 @@ class Editor : View("Omnius") {
     }
 
     bottom(statusBar::class)
+  }
+
+  // Moves the tool bar
+  private fun moveToolBar(position: ToolBar.Position) {
+    with(root) {
+      with(toolBar.root) {
+        when (position) {
+          TOP -> {
+            orientation = HORIZONTAL
+            top.add(this)
+          }
+          ToolBar.Position.LEFT -> {
+            if (left == null) left = AnchorPane()
+            orientation = VERTICAL
+            left.add(this.anchorpaneConstraints {
+              bottomAnchor = 0
+              topAnchor = 0
+              leftAnchor = 0
+              rightAnchor = 0
+            })
+          }
+        }
+      }
+    }
+  }
+
+  private fun toggleToolBarVisibility() {
+    with(toolBar.root) { isVisible = !isVisible }
   }
 }

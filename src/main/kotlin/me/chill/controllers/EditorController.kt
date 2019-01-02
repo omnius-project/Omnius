@@ -1,26 +1,21 @@
 package me.chill.controllers
 
-import javafx.geometry.Orientation.HORIZONTAL
-import javafx.geometry.Orientation.VERTICAL
 import javafx.scene.control.Tab
-import javafx.scene.layout.AnchorPane
 import javafx.stage.DirectoryChooser
-import javafx.stage.Stage
 import me.chill.actionmap.ActionMap
 import me.chill.actionmap.ActionMap.*
 import me.chill.actionmap.ActionMapObserver
 import me.chill.models.FileExplorerItem
-import me.chill.views.editor.MarkdownArea
 import me.chill.utility.extensions.isImage
 import me.chill.views.editor.Editor
+import me.chill.views.editor.MarkdownArea
 import me.chill.views.editor.MenuBar
 import me.chill.views.editor.ToolBar
 import me.chill.views.editor.ToolBar.Position.LEFT
 import me.chill.views.editor.ToolBar.Position.TOP
 import me.chill.views.fragments.ExitFragment
+import me.chill.models.EditorModel.Companion.INSTANCE
 import tornadofx.Controller
-import tornadofx.add
-import tornadofx.anchorpaneConstraints
 import java.io.File
 
 // TODO: Split out the controllers for the editing area
@@ -47,12 +42,12 @@ class EditorController : Controller(), ActionMapObserver {
 
   private fun actionMapAction(actionMap: ActionMap) {
     when (actionMap) {
-      OPEN_FOLDER -> openFolder(primaryStage)
-      CUT -> cut()
-      COPY -> copy()
-      PASTE -> paste()
-      UNDO -> undo()
-      REDO -> redo()
+      OPEN_FOLDER -> openFolder()
+      CUT -> markdownArea.cut()
+      COPY -> markdownArea.copy()
+      PASTE -> markdownArea.paste()
+      UNDO -> markdownArea.undo()
+      REDO -> markdownArea.redo()
       SAVE_FILE -> saveFile()
       SAVE_ALL -> saveAll()
       OPTIONS -> launchOptions()
@@ -66,14 +61,14 @@ class EditorController : Controller(), ActionMapObserver {
       IMPORT_VCS -> importFromVCS()
       EXPORT_PDF -> export()
       STRIKETHROUGH -> TODO()
-      MOVE_TOOLBAR_TOP -> moveToolBar(TOP)
-      MOVE_TOOLBAR_LEFT -> moveToolBar(LEFT)
-      TOGGLE_TOOBAR_VISIBILITY -> toggleToolBar()
+      MOVE_TOOLBAR_TOP -> INSTANCE.setToolBarPosition(TOP)
+      MOVE_TOOLBAR_LEFT -> INSTANCE.setToolBarPosition(LEFT)
+      TOGGLE_TOOBAR_VISIBILITY -> INSTANCE.toggleToolBarVisibility()
     }
   }
 
   // Populates the tree view with the folder structure
-  private fun openFolder(primaryStage: Stage) {
+  private fun openFolder() {
     // TODO: Open folder relative to the current directory
     val folder = DirectoryChooser()
       .apply { title = "Open Folder" }
@@ -108,47 +103,6 @@ class EditorController : Controller(), ActionMapObserver {
   private fun exit() {
     // TODO: Check if work is saved
     find<ExitFragment>().openModal(resizable = false)
-  }
-
-  private fun undo() = markdownArea.undo()
-
-  private fun redo() = markdownArea.redo()
-
-  private fun cut() = markdownArea.cut()
-
-  private fun copy() = markdownArea.copy()
-
-  private fun paste() = markdownArea.paste()
-
-  // Toggles the visibility of the tool bar
-  private fun toggleToolBar() {
-    with(toolBar.root) {
-      isVisible = !isVisible
-    }
-  }
-
-  // Moves the tool bar
-  private fun moveToolBar(position: ToolBar.Position) {
-    with(editor.root) {
-      with(toolBar.root) {
-        when (position) {
-          TOP -> {
-            orientation = HORIZONTAL
-            top.add(this)
-          }
-          LEFT -> {
-            if (left == null) left = AnchorPane()
-            orientation = VERTICAL
-            left.add(this.anchorpaneConstraints {
-              bottomAnchor = 0
-              topAnchor = 0
-              leftAnchor = 0
-              rightAnchor = 0
-            })
-          }
-        }
-      }
-    }
   }
 
   // TODO: Check the file extension first before opening
