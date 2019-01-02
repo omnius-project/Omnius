@@ -4,10 +4,8 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.*
 import javafx.scene.control.TreeItem
 import javafx.scene.control.TreeView
-import me.chill.controllers.StatusBarController
 import me.chill.models.FileExplorerItem
 import me.chill.utility.glyphtools.GlyphFactory
-import tornadofx.find
 import tornadofx.runAsync
 import tornadofx.ui
 import java.io.File
@@ -20,7 +18,6 @@ class FolderTreeView : TreeView<FileExplorerItem>() {
 
   // TODO: Allow users to filter only markdown file
   private var isOpeningFile = false
-  private val statusBarController = find<StatusBarController>()
   private val glyphFactory = GlyphFactory.Builder().build()
 
   fun onDoubleClick(action: (FileExplorerItem) -> Unit) {
@@ -37,7 +34,6 @@ class FolderTreeView : TreeView<FileExplorerItem>() {
   fun loadFolder(folder: File) {
     with(folder) {
       if (!isOpeningFile) {
-        statusBarController.dispatchMessage("Opening folder: $nameWithoutExtension")
         isOpeningFile = true
         populateFolderView(this)
       }
@@ -58,7 +54,6 @@ class FolderTreeView : TreeView<FileExplorerItem>() {
     } ui {
       root = it
       isOpeningFile = false
-      statusBarController.dispatchMessage("${file.nameWithoutExtension} opened successfully")
     }
   }
 

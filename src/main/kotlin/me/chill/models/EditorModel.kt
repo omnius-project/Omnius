@@ -52,7 +52,7 @@ class EditorModel private constructor(
 
   fun toggleToolBarVisibility(): EditorModel {
     notifyObservers(TOGGLE_TOOBAR_VISIBILITY)
-    this.toolBarVisibility = !this.toolBarVisibility
+    toolBarVisibility = !toolBarVisibility
     return this
   }
 
