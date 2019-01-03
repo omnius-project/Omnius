@@ -31,7 +31,7 @@ class Editor : View("Omnius"), ActionMapObserver {
   val markdownArea = find<MarkdownArea>()
 
   init {
-    EditorModel.INSTANCE.addObserver(this)
+    EditorModel.addObserver(this)
     markdownArea.onOpen { fileExplorerItem, tab -> openFileContents(fileExplorerItem.file, tab) }
   }
 

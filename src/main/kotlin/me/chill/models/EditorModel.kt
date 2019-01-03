@@ -8,23 +8,19 @@ import me.chill.views.editor.ToolBar
 import me.chill.views.editor.ToolBar.Position.LEFT
 import me.chill.views.editor.ToolBar.Position.TOP
 
+
 /**
  * Model for the editor - stores user preferences that can be loaded from the settings file
  */
-// TODO: Make this a singleton since it's going to be loaded once
-class EditorModel private constructor(
-  private var toolBarPosition: ToolBar.Position = TOP,
-  private var toolBarVisibility: Boolean = true) : ActionMapObservable {
+object EditorModel : ActionMapObservable {
 
   private val listeners = mutableListOf<ActionMapObserver>()
 
-  companion object {
-    val INSTANCE = loadEditorPreferences()
+  private var toolBarPosition = TOP
+  private var toolBarVisibility = true
 
-    private fun loadEditorPreferences(): EditorModel {
-      // TODO: Add settings reading functionality
-      return EditorModel()
-    }
+  init {
+    // TODO: Add settings loading here
   }
 
   override fun addObserver(actionMapObserver: ActionMapObserver) {
@@ -40,10 +36,12 @@ class EditorModel private constructor(
   }
 
   fun setToolBarPosition(toolBarPosition: ToolBar.Position): EditorModel {
-    when (toolBarPosition) {
-      TOP -> notifyObservers(MOVE_TOOLBAR_TOP)
-      LEFT -> notifyObservers(MOVE_TOOLBAR_LEFT)
-    }
+    notifyObservers(
+      when (toolBarPosition) {
+        TOP -> MOVE_TOOLBAR_TOP
+        LEFT -> MOVE_TOOLBAR_LEFT
+      }
+    )
     this.toolBarPosition = toolBarPosition
     return this
   }
@@ -53,6 +51,7 @@ class EditorModel private constructor(
   fun toggleToolBarVisibility(): EditorModel {
     notifyObservers(TOGGLE_TOOBAR_VISIBILITY)
     toolBarVisibility = !toolBarVisibility
+    println(toolBarVisibility)
     return this
   }
 

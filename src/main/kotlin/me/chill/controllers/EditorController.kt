@@ -4,7 +4,7 @@ import javafx.stage.DirectoryChooser
 import me.chill.actionmap.ActionMap
 import me.chill.actionmap.ActionMap.*
 import me.chill.actionmap.ActionMapObserver
-import me.chill.models.EditorModel.Companion.INSTANCE
+import me.chill.models.EditorModel
 import me.chill.views.editor.Editor
 import me.chill.views.editor.MenuBar
 import me.chill.views.editor.ToolBar
@@ -50,9 +50,9 @@ class EditorController : Controller(), ActionMapObserver {
       IMPORT_VCS -> importFromVCS()
       EXPORT_PDF -> export()
       STRIKETHROUGH -> TODO()
-      MOVE_TOOLBAR_TOP -> INSTANCE.setToolBarPosition(TOP)
-      MOVE_TOOLBAR_LEFT -> INSTANCE.setToolBarPosition(LEFT)
-      TOGGLE_TOOBAR_VISIBILITY -> INSTANCE.toggleToolBarVisibility()
+      MOVE_TOOLBAR_TOP -> EditorModel.setToolBarPosition(TOP)
+      MOVE_TOOLBAR_LEFT -> EditorModel.setToolBarPosition(LEFT)
+      TOGGLE_TOOBAR_VISIBILITY -> EditorModel.toggleToolBarVisibility()
     }
   }
 
