@@ -1,8 +1,7 @@
-package me.chill.views.editor
+package me.chill.views
 
 import javafx.geometry.Orientation.HORIZONTAL
 import javafx.geometry.Orientation.VERTICAL
-import javafx.scene.control.Tab
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.Priority
 import me.chill.actionmap.ActionMap
@@ -13,8 +12,8 @@ import me.chill.models.FileExplorerItem
 import me.chill.styles.StatusBarStyles
 import me.chill.ui.FolderTreeView
 import me.chill.utility.extensions.isImage
-import me.chill.views.editor.ToolBar.Position.LEFT
-import me.chill.views.editor.ToolBar.Position.TOP
+import me.chill.views.ToolBar.Position.LEFT
+import me.chill.views.ToolBar.Position.TOP
 import tornadofx.*
 import java.io.File
 

@@ -1,4 +1,4 @@
-package me.chill.views.editor
+package me.chill.views
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import javafx.geometry.Orientation.VERTICAL

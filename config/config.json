@@ -1,0 +1,11 @@
+{
+  "toolBarPosition": "TOP",
+  "toolBarVisibility": true,
+  "fontSize": 25,
+  "fontFamily": [
+    "Noto Mono",
+    "Consolas",
+    "Source Code Pro",
+    "Monaco"
+  ]
+}

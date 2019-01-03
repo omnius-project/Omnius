@@ -7,13 +7,12 @@ import me.chill.actionmap.ActionMapObserver
 import me.chill.models.EditorModel.currentFolder
 import me.chill.models.EditorModel.toggleToolBarVisibility
 import me.chill.models.EditorModel.toolBarPosition
-import me.chill.views.editor.Editor
-import me.chill.views.editor.MarkdownArea
-import me.chill.views.editor.MenuBar
-import me.chill.views.editor.ToolBar
-import me.chill.views.editor.ToolBar.Position.LEFT
-import me.chill.views.editor.ToolBar.Position.TOP
-import me.chill.views.fragments.ExitFragment
+import me.chill.views.MarkdownArea
+import me.chill.views.MenuBar
+import me.chill.views.ToolBar
+import me.chill.views.ToolBar.Position.LEFT
+import me.chill.views.ToolBar.Position.TOP
+import me.chill.dialogs.ExitFragment
 import tornadofx.Controller
 
 // TODO: Split out the controllers for the editing area
@@ -28,9 +27,7 @@ class EditorController : Controller(), ActionMapObserver {
     menuBar.addObserver(this)
   }
 
-  override fun update(actionMap: ActionMap) = actionMapAction(actionMap)
-
-  private fun actionMapAction(actionMap: ActionMap) {
+  override fun update(actionMap: ActionMap) {
     when (actionMap) {
       OPEN_FOLDER -> openFolder()
       CUT -> markdownArea.cut()

@@ -1,4 +1,4 @@
-package me.chill.views.fragments
+package me.chill.dialogs
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon.WARNING
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView

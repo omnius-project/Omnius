@@ -4,8 +4,9 @@ import me.chill.actionmap.ActionMap
 import me.chill.actionmap.ActionMap.*
 import me.chill.actionmap.ActionMapObservable
 import me.chill.actionmap.ActionMapObserver
-import me.chill.views.editor.ToolBar.Position.LEFT
-import me.chill.views.editor.ToolBar.Position.TOP
+import me.chill.configuration.ConfigurationManager.configuration
+import me.chill.views.ToolBar.Position.LEFT
+import me.chill.views.ToolBar.Position.TOP
 import java.io.File
 
 
@@ -16,7 +17,7 @@ object EditorModel : ActionMapObservable {
 
   private val listeners = mutableListOf<ActionMapObserver>()
 
-  var toolBarPosition = TOP
+  var toolBarPosition = configuration.toolBarPosition
     set(value) {
       field = value
       notifyObservers(
@@ -26,17 +27,27 @@ object EditorModel : ActionMapObservable {
         }
       )
     }
-  var toolBarVisibility = true
+
+  var toolBarVisibility = configuration.toolBarVisibility
     private set
+
   var currentFolder: File? = null
     set(value) {
       field = value
       notifyObservers(FOLDER_CHANGED)
     }
 
-  init {
-    // TODO: Add settings loading here
-  }
+  var fontSize = configuration.fontSize
+    set(value) {
+      field = value
+      notifyObservers(FONT_SIZE_CHANGED)
+    }
+
+  var fontFamily = configuration.fontFamily
+    set(value) {
+      field = value.toList()
+      notifyObservers(FONT_FAMILY_CHANGED)
+    }
 
   override fun addObserver(actionMapObserver: ActionMapObserver) {
     listeners.add(actionMapObserver)

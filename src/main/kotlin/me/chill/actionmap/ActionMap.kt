@@ -36,4 +36,6 @@ enum class ActionMap(
   MOVE_TOOLBAR_LEFT("Toolbar Position Left"),
   TOGGLE_TOOLBAR_VISIBILITY("Toggle Toolbar"),
   FOLDER_CHANGED("Folder Changed"),
+  FONT_SIZE_CHANGED("Font Size Changed"),
+  FONT_FAMILY_CHANGED("Font Family Changed"),
 }

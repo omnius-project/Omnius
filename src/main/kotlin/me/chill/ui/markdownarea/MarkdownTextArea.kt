@@ -3,6 +3,7 @@ package me.chill.ui.markdownarea
 import javafx.scene.Node
 import javafx.scene.paint.Color.BLACK
 import javafx.scene.text.TextFlow
+import me.chill.models.EditorModel
 import org.fxmisc.richtext.GenericStyledArea
 import org.fxmisc.richtext.LineNumberFactory
 import org.fxmisc.richtext.StyledTextArea
@@ -16,7 +17,10 @@ import org.fxmisc.richtext.model.StyledSegment
 class MarkdownTextArea : GenericStyledArea<ParagraphStyle, String, TextStyle>(
   ParagraphStyle(),
   { paragraph: TextFlow, style: ParagraphStyle -> paragraph.style = style.toCss() },
-  TextStyle().fontSize(20).fontFamily("Monaco", "Source Code Pro").textColor(BLACK),
+  TextStyle()
+    .fontSize(EditorModel.fontSize)
+    .fontFamily(*EditorModel.fontFamily.toTypedArray())
+    .textColor(BLACK),
   SegmentOps.styledTextOps<TextStyle>(),
   false,
   { seg -> createNode(seg) { text, style -> text.style = style.toCss() } }

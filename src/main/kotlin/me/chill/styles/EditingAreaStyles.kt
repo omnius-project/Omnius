@@ -2,6 +2,7 @@ package me.chill.styles
 
 import javafx.scene.Cursor.HAND
 import javafx.scene.paint.Color.TRANSPARENT
+import me.chill.models.EditorModel
 import me.chill.styles.Styles.Companion.bg
 import me.chill.styles.Styles.Companion.subtleGrey
 import tornadofx.Stylesheet
@@ -65,8 +66,8 @@ class EditingAreaStyles : Stylesheet() {
       backgroundColor += TRANSPARENT
       borderColor += box(TRANSPARENT, subtleGrey, TRANSPARENT, TRANSPARENT)
       borderWidth += box(0.px, 1.px, 0.px, 0.px)
-      fontSize = 16.px
-      fontFamily = "Source Code Pro"
+      fontSize = (EditorModel.fontSize - 5).px
+      fontFamily = EditorModel.fontFamily.joinToString(", ")
     }
   }
 }

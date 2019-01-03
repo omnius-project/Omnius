@@ -1,9 +1,10 @@
 package me.chill
 
 import javafx.stage.Stage
+import me.chill.configuration.ConfigurationManager
 import me.chill.controllers.EditorController
 import me.chill.styles.*
-import me.chill.views.editor.Editor
+import me.chill.views.Editor
 import tornadofx.App
 import tornadofx.find
 
@@ -18,6 +19,7 @@ class Omnius : App(
 
   init {
     find<EditorController>()
+    ConfigurationManager.loadConfiguration()
   }
 
   override fun start(stage: Stage) {
