@@ -34,5 +34,6 @@ enum class ActionMap(
   STRIKETHROUGH("Strikethrough", icon = FontAwesomeIcon.STRIKETHROUGH),
   MOVE_TOOLBAR_TOP("Toolbar Position Top"),
   MOVE_TOOLBAR_LEFT("Toolbar Position Left"),
-  TOGGLE_TOOBAR_VISIBILITY("Toggle Toolbar")
+  TOGGLE_TOOLBAR_VISIBILITY("Toggle Toolbar"),
+  FOLDER_CHANGED("Folder Changed"),
 }

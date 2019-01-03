@@ -10,6 +10,7 @@ import me.chill.actionmap.ActionMap
 import me.chill.actionmap.ActionMap.*
 import me.chill.actionmap.ActionMapObserver
 import me.chill.models.EditorModel
+import me.chill.models.EditorModel.currentFolder
 import me.chill.models.EditorModel.toolBarVisibility
 import me.chill.models.FileExplorerItem
 import me.chill.styles.StatusBarStyles
@@ -40,7 +41,8 @@ class Editor : View("Omnius"), ActionMapObserver {
     when (actionMap) {
       MOVE_TOOLBAR_TOP -> moveToolBar(TOP)
       MOVE_TOOLBAR_LEFT -> moveToolBar(LEFT)
-      TOGGLE_TOOBAR_VISIBILITY -> toggleToolBarVisibility()
+      TOGGLE_TOOLBAR_VISIBILITY -> toggleToolBarVisibility()
+      FOLDER_CHANGED -> currentFolder?.let { loadFolder(it) }
       else -> return
     }
   }
@@ -74,7 +76,7 @@ class Editor : View("Omnius"), ActionMapObserver {
     }
   }
 
-  fun loadFolder(folder: File) {
+  private fun loadFolder(folder: File) {
     markdownArea.clearArea()
     fileExplorer.loadFolder(folder)
   }

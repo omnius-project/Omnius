@@ -87,7 +87,7 @@ class MenuBar : View(), ActionMapObservable {
 
         checkmenuitem("Toggle toolbar").apply {
           isSelected = true
-          action { notifyObservers(TOGGLE_TOOBAR_VISIBILITY) }
+          action { notifyObservers(TOGGLE_TOOLBAR_VISIBILITY) }
         }
       }
     }

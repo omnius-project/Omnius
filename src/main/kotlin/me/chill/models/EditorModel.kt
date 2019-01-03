@@ -28,7 +28,11 @@ object EditorModel : ActionMapObservable {
     }
   var toolBarVisibility = true
     private set
-  private var currentFolder: File? = null
+  var currentFolder: File? = null
+    set(value) {
+      field = value
+      notifyObservers(FOLDER_CHANGED)
+    }
 
   init {
     // TODO: Add settings loading here
@@ -48,14 +52,6 @@ object EditorModel : ActionMapObservable {
 
   fun toggleToolBarVisibility() {
     toolBarVisibility = !toolBarVisibility
-    notifyObservers(TOGGLE_TOOBAR_VISIBILITY)
+    notifyObservers(TOGGLE_TOOLBAR_VISIBILITY)
   }
-
-  fun setCurrentFolder(currentFolder: File): EditorModel {
-    notifyObservers(OPEN_FOLDER)
-    this.currentFolder = currentFolder
-    return this
-  }
-
-  fun getCurrentFolder() = currentFolder
 }
