@@ -1,17 +1,14 @@
 package me.chill.views.editor
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
-import javafx.geometry.Orientation.HORIZONTAL
 import javafx.geometry.Orientation.VERTICAL
 import javafx.scene.control.ToolBar
-import javafx.scene.layout.AnchorPane
 import me.chill.actionmap.ActionMap
 import me.chill.actionmap.ActionMap.*
 import me.chill.actionmap.ActionMapObservable
 import me.chill.actionmap.ActionMapObserver
+import me.chill.models.EditorModel
 import me.chill.utility.glyphtools.GlyphFactory
-import me.chill.views.editor.ToolBar.Position.LEFT
-import me.chill.views.editor.ToolBar.Position.TOP
 import tornadofx.*
 
 // TODO: Make the visibility of the tool bar an observable value
@@ -61,6 +58,10 @@ class ToolBar : View(), ActionMapObservable {
 
   private fun ToolBar.buttons(vararg actionMaps: ActionMap) {
     actionMaps.forEach { button(it) }
+  }
+
+  fun toggleToolBarVisibility() {
+    root.isVisible = EditorModel.toolBarVisibility
   }
 
   private fun addGlyph(glyph: FontAwesomeIcon) = glyphFactory.make(glyph)

@@ -23,8 +23,7 @@ class FolderTreeView : TreeView<FileExplorerItem>() {
   fun onDoubleClick(action: (FileExplorerItem) -> Unit) {
     setOnMouseClicked {
       val selectedItem = selectionModel.selectedItem
-      selectedItem ?: return@setOnMouseClicked
-      if (it.clickCount == 2 && children.isNotEmpty()) {
+      if (selectedItem != null && it.clickCount == 2 && children.isNotEmpty()) {
         action((selectedItem as TreeItem<FileExplorerItem>).value)
       }
     }

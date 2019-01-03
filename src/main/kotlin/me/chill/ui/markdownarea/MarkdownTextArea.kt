@@ -19,7 +19,8 @@ class MarkdownTextArea : GenericStyledArea<ParagraphStyle, String, TextStyle>(
   TextStyle().fontSize(20).fontFamily("Monaco", "Source Code Pro").textColor(BLACK),
   SegmentOps.styledTextOps<TextStyle>(),
   false,
-  { seg -> createNode(seg) { text, style -> text.style = style.toCss() } }) {
+  { seg -> createNode(seg) { text, style -> text.style = style.toCss() } }
+) {
   // TODO: Pass an EditableStyleDocument for allowing split window editing
   // TODO: When the user references an image in markdown, replace it with the actual image if the text is not in focus
   // TODO: Quotes get aligned to the right automatically

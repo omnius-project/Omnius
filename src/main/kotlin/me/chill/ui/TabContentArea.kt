@@ -14,10 +14,10 @@ import kotlin.reflect.KClass
 class TabContentArea<F : Node, CT>(private val contentType: KClass<F>) : TabPane() {
 
   private val openTabs = mutableMapOf<CT, Tab>()
-  private var onOpenAction: ((CT, Tab) -> Unit)? = null
+  private var onNewFileOpenAction: ((CT, Tab) -> Unit)? = null
 
-  fun setOnOpenAction(action: (CT, Tab) -> Unit) {
-    onOpenAction = action
+  fun setOnNewFileOpenAction(action: (CT, Tab) -> Unit) {
+    onNewFileOpenAction = action
   }
 
   // TODO: Function should save the open tabs to be restored the next time the same folder is opened
@@ -34,20 +34,21 @@ class TabContentArea<F : Node, CT>(private val contentType: KClass<F>) : TabPane
 
   fun openTab(item: CT, title: String) {
     val tab = Tab(title)
-      .apply { content = contentType.constructors.first().call() }
-    tab.setOnClosed { openTabs.remove(item) }
+      .apply {
+        content = contentType.constructors.first().call()
+        setOnClosed { openTabs.remove(item) }
+      }
 
     val matchingKey: (Map.Entry<CT, Tab>) -> Boolean = { it.key == item }
     val isFileAlreadyOpen = openTabs.any(matchingKey)
 
-    if (!isFileAlreadyOpen) {
+    if (isFileAlreadyOpen) {
+      selectionModel.select(openTabs.first(matchingKey).value)
+    } else {
       tabs.add(tab)
       selectionModel.select(tab)
-      onOpenAction?.invoke(item, tab)
+      onNewFileOpenAction?.invoke(item, tab)
       openTabs[item] = tab
-    } else {
-      val existingTab = openTabs.first(matchingKey).value
-      selectionModel.select(existingTab)
     }
   }
 }

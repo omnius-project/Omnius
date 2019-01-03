@@ -8,6 +8,7 @@ import me.chill.models.EditorModel.currentFolder
 import me.chill.models.EditorModel.toggleToolBarVisibility
 import me.chill.models.EditorModel.toolBarPosition
 import me.chill.views.editor.Editor
+import me.chill.views.editor.MarkdownArea
 import me.chill.views.editor.MenuBar
 import me.chill.views.editor.ToolBar
 import me.chill.views.editor.ToolBar.Position.LEFT
@@ -18,9 +19,7 @@ import tornadofx.Controller
 // TODO: Split out the controllers for the editing area
 class EditorController : Controller(), ActionMapObserver {
 
-  private val editor = find<Editor>()
-  private val markdownArea = editor.markdownArea
-
+  private val markdownArea = find<MarkdownArea>()
   private val toolBar = find<ToolBar>()
   private val menuBar = find<MenuBar>()
 

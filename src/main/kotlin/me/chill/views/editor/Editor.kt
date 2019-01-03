@@ -2,7 +2,6 @@ package me.chill.views.editor
 
 import javafx.geometry.Orientation.HORIZONTAL
 import javafx.geometry.Orientation.VERTICAL
-import javafx.scene.control.Label
 import javafx.scene.control.Tab
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.Priority
@@ -10,8 +9,6 @@ import me.chill.actionmap.ActionMap
 import me.chill.actionmap.ActionMap.*
 import me.chill.actionmap.ActionMapObserver
 import me.chill.models.EditorModel
-import me.chill.models.EditorModel.currentFolder
-import me.chill.models.EditorModel.toolBarVisibility
 import me.chill.models.FileExplorerItem
 import me.chill.styles.StatusBarStyles
 import me.chill.ui.FolderTreeView
@@ -26,23 +23,22 @@ class Editor : View("Omnius"), ActionMapObserver {
 
   private val menuBar: MenuBar by inject()
   private val toolBar: ToolBar by inject()
-  private lateinit var statusMessage: Label
-  private lateinit var caretPosition: Label
+  private val statusMessage = label()
+  private val caretPosition = label()
 
-  private lateinit var fileExplorer: FolderTreeView
-  val markdownArea = find<MarkdownArea>()
+  private val fileExplorer = FolderTreeView().apply { onDoubleClick(this@Editor::fileSelectionAction) }
+  private val markdownArea = find<MarkdownArea>()
 
   init {
     EditorModel.addObserver(this)
-    markdownArea.onOpen { fileExplorerItem, tab -> openFileContents(fileExplorerItem.file, tab) }
   }
 
   override fun update(actionMap: ActionMap) {
     when (actionMap) {
       MOVE_TOOLBAR_TOP -> moveToolBar(TOP)
       MOVE_TOOLBAR_LEFT -> moveToolBar(LEFT)
-      TOGGLE_TOOLBAR_VISIBILITY -> toggleToolBarVisibility()
-      FOLDER_CHANGED -> currentFolder?.let { loadFolder(it) }
+      TOGGLE_TOOLBAR_VISIBILITY -> toolBar.toggleToolBarVisibility()
+      FOLDER_CHANGED -> EditorModel.currentFolder?.let { loadFolder(it) }
       else -> return
     }
   }
@@ -56,8 +52,6 @@ class Editor : View("Omnius"), ActionMapObserver {
     center = splitpane(HORIZONTAL) {
       setDividerPositions(0.1, 0.9)
 
-      fileExplorer = FolderTreeView()
-      fileExplorer.onDoubleClick(this@Editor::fileSelectionAction)
       add(fileExplorer)
 
       // TODO: When maximizing the window, take into account the divider positions and apply the same ratio to maximized window
@@ -68,11 +62,12 @@ class Editor : View("Omnius"), ActionMapObserver {
       add(markdownArea)
     }
 
+    // TODO: Split the status bar into a different view and have a model-controller for it
     bottom = hbox {
       addClass(StatusBarStyles.statusBar)
-      statusMessage = label()
+      add(statusMessage)
       region { hgrow = Priority.ALWAYS }
-      caretPosition = label("Hello")
+      add(caretPosition)
     }
   }
 
@@ -91,7 +86,7 @@ class Editor : View("Omnius"), ActionMapObserver {
             top.add(this)
           }
           LEFT -> {
-            if (left == null) left = AnchorPane()
+            left = left ?: AnchorPane()
             orientation = VERTICAL
             left.add(this.anchorpaneConstraints {
               bottomAnchor = 0
@@ -105,26 +100,13 @@ class Editor : View("Omnius"), ActionMapObserver {
     }
   }
 
-  private fun toggleToolBarVisibility() {
-    toolBar.root.isVisible = toolBarVisibility
-  }
-
   // TODO: Check the file extension first before opening
   private fun fileSelectionAction(fileItem: FileExplorerItem) {
     with(fileItem.file) {
       if (isFile && !isImage) {
         dispatchMessage("Opening: $name")
-        markdownArea.root.openTab(fileItem, name)
+        markdownArea.openTab(fileItem, name)
       }
-    }
-  }
-
-  private fun openFileContents(file: File, tab: Tab) {
-    with((tab.content as MarkdownArea.ScrollArea).content) {
-      replaceText(file.readText())
-      requestFocus()
-      moveTo(0)
-      requestFollowCaret()
     }
   }
 

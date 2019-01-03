@@ -16,11 +16,10 @@ class MarkdownArea : View() {
   class ScrollArea : VirtualizedScrollPane<MarkdownTextArea>(MarkdownTextArea())
 
   override val root = TabContentArea<ScrollArea, FileExplorerItem>(ScrollArea::class)
-    .apply { tabClosingPolicy = ALL_TABS }
-
-  fun onOpen(openAction: (FileExplorerItem, Tab) -> Unit) {
-    root.setOnOpenAction(openAction)
-  }
+    .apply {
+      tabClosingPolicy = ALL_TABS
+      setOnNewFileOpenAction(this@MarkdownArea::openFileContents)
+    }
 
   fun clearArea() = root.clearArea()
 
@@ -33,6 +32,19 @@ class MarkdownArea : View() {
   fun undo() = performActionInMarkdownArea { undo() }
 
   fun redo() = performActionInMarkdownArea { redo() }
+
+  fun openTab(fileItem: FileExplorerItem, fileName: String) {
+    root.openTab(fileItem, fileName)
+  }
+
+  private fun openFileContents(fileItem: FileExplorerItem, tab: Tab) {
+    with((tab.content as ScrollArea).content) {
+      replaceText(fileItem.file.readText())
+      requestFocus()
+      moveTo(0)
+      requestFollowCaret()
+    }
+  }
 
   private fun getCurrentMarkdownArea() = (root.getCurrentTab().content as ScrollArea).content
 
