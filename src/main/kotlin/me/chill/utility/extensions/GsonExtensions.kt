@@ -43,12 +43,14 @@ fun JsonObject.get(key: ConfigurationKeys): JsonElement? = get(key.keyName)
  * @throws [IllegalArgumentException] if [T] is not of type **String, Number, Chat or Boolean**
  */
 fun <T> JsonObject.addProperty(key: ConfigurationKeys, value: T): JsonObject {
-  when (value) {
-    is String -> addProperty(key, value)
-    is Number -> addProperty(key, value)
-    is Char -> addProperty(key, value)
-    is Boolean -> addProperty(key, value)
-    else -> throw IllegalArgumentException("Value $value must be of type String, Number, Char or Boolean")
+  with(key.keyName) {
+    when (value) {
+      is String -> addProperty(this, value)
+      is Number -> addProperty(this, value)
+      is Char -> addProperty(this, value)
+      is Boolean -> addProperty(this, value)
+      else -> throw IllegalArgumentException("Value $value must be of type String, Number, Char or Boolean")
+    }
   }
 
   return this
