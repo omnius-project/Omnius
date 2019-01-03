@@ -1,10 +1,9 @@
-package me.chill
+package me.chill.views
 
 import javafx.stage.Stage
 import me.chill.configuration.ConfigurationManager
 import me.chill.controllers.EditorController
 import me.chill.styles.*
-import me.chill.views.Editor
 import tornadofx.App
 import tornadofx.find
 
@@ -25,7 +24,7 @@ class Omnius : App(
   override fun start(stage: Stage) {
     with(stage) {
       isMaximized = true
-      icons += resources.image("../../icon.png")
+      icons += resources.image("../../../icon.png")
       super.start(this)
     }
   }

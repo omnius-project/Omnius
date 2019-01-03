@@ -10,7 +10,20 @@ import me.chill.actionmap.ActionMapObservable
 import me.chill.actionmap.ActionMapObserver
 import me.chill.models.EditorModel
 import tornadofx.*
+import me.chill.controllers.EditorController
 
+/**
+ * Dialog to allow users to edit their preferences, which is then saved to the configuration
+ * file.
+ *
+ * When the user saves the options, a [OPTIONS_SAVE] event is triggered, notifying all
+ * observers, which react accordingly.
+ *
+ * Is a [ActionMapObservable]
+ * - Will be observed by [EditorController] when this dialog is inflated
+ *
+ * @see [EditorController]
+ */
 class OptionsDialog : Fragment("Options"), ActionMapObservable {
 
   private val listeners = mutableListOf<ActionMapObserver>()

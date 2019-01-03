@@ -8,9 +8,12 @@ import me.chill.actionmap.ActionMapObserver
 import me.chill.configuration.ConfigurationManager
 import me.chill.dialogs.ExitDialog
 import me.chill.dialogs.OptionsDialog
+import me.chill.models.EditorModel
 import me.chill.models.EditorModel.currentFolder
 import me.chill.models.EditorModel.toggleToolBarVisibility
 import me.chill.models.EditorModel.toolBarPosition
+import me.chill.ui.FolderTreeView
+import me.chill.views.Editor
 import me.chill.views.MarkdownArea
 import me.chill.views.MenuBar
 import me.chill.views.ToolBar
@@ -18,6 +21,13 @@ import me.chill.views.ToolBar.Position.LEFT
 import me.chill.views.ToolBar.Position.TOP
 import tornadofx.Controller
 
+/**
+ * Controller between [Editor] and [EditorModel].
+ *
+ * Is a [ActionMapObserver]
+ * - Observes [ToolBar] and [MenuBar] for user selections for the options
+ * - Will subscribe to the [OptionsDialog] when it is created
+ */
 // TODO: Split out the controllers for the editing area
 class EditorController : Controller(), ActionMapObserver {
 
@@ -40,7 +50,7 @@ class EditorController : Controller(), ActionMapObserver {
       REDO -> markdownArea.redo()
       SAVE_FILE -> saveFile()
       SAVE_ALL -> saveAll()
-      OPTIONS -> launchOptions()
+      OPTIONS -> showOptions()
       EXIT -> exit()
       BOLD -> TODO()
       ITALIC -> TODO()
@@ -59,9 +69,16 @@ class EditorController : Controller(), ActionMapObserver {
     }
   }
 
-  // Populates the tree view with the folder structure
+  /**
+   * Opens a folder selection dialog box for the user to select the folder to expand.
+   * If the user selects cancel, the dialog closes, returning null, when this happens, the
+   * method stops.
+   *
+   * Changes the [currentFolder] variable of the [EditorModel] which triggers the view to
+   * update the [FolderTreeView] accordingly.
+   */
+  // TODO: Open folder relative to the current directory
   private fun openFolder() {
-    // TODO: Open folder relative to the current directory
     val folder = DirectoryChooser()
       .apply { title = "Open Folder" }
       .showDialog(primaryStage)
@@ -87,15 +104,28 @@ class EditorController : Controller(), ActionMapObserver {
     println("Exporting")
   }
 
-  private fun launchOptions() {
+  /**
+   * Launches the [OptionsDialog] modal allowing users to change their user preferences.
+   *
+   * Subscribes the [EditorController] as an [ActionMapObserver] to the [OptionsDialog],
+   * listening for primarily [OPTIONS_SAVE] events in order to trigger the [ConfigurationManager]
+   * to update the configurations.
+   */
+  private fun showOptions() {
     with(find<OptionsDialog>()) {
       addObserver(this@EditorController)
       openModal()
     }
   }
 
+  /**
+   * Launches the [ExitDialog] modal allowing users to decide if they want to leave the editor
+   * before saving their files.
+   *
+   * If users exit even after prompting, changes to their files will be unsaved.
+   */
+  // TODO: Check if work is saved
   private fun exit() {
-    // TODO: Check if work is saved
     find<ExitDialog>().openModal(resizable = false)
   }
 }

@@ -8,8 +8,10 @@ import kotlin.reflect.KClass
 
 /**
  * Custom TabPane for adding new tabs based on certain events
- * <F> is the type of tabContentArea to fill each tab with
- * <CT> is the content type each tab will hold onto
+ *
+ * @param F Content type each tab will be filled with
+ * @param CT Content type each type will hold
+ * @param contentType KClass of [CT] - added because **reified** cannot be specified for a class
  */
 class TabContentArea<F : Node, CT>(private val contentType: KClass<F>) : TabPane() {
 
@@ -20,6 +22,9 @@ class TabContentArea<F : Node, CT>(private val contentType: KClass<F>) : TabPane
     onNewFileOpenAction = action
   }
 
+  /**
+   * Clears the entire content area of any existing tabs.
+   */
   // TODO: Function should save the open tabs to be restored the next time the same folder is opened
   fun clearArea() {
     openTabs.clear()
@@ -32,6 +37,14 @@ class TabContentArea<F : Node, CT>(private val contentType: KClass<F>) : TabPane
 
   fun getCurrentTabContent() = getCurrentTabData().key
 
+  /**
+   * Opens a tab in the content area with title as [title].
+   *
+   * If the tab has already been opened, the content area will focus onto the folder instead.
+   *
+   * @param item Item to open the tab with
+   * @param title Title of the tab
+   */
   fun openTab(item: CT, title: String) {
     val tab = Tab(title)
       .apply {
