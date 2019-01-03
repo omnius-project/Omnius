@@ -5,6 +5,8 @@ import me.chill.actionmap.ActionMap
 import me.chill.actionmap.ActionMap.*
 import me.chill.actionmap.ActionMapObserver
 import me.chill.models.EditorModel
+import me.chill.models.EditorModel.toggleToolBarVisibility
+import me.chill.models.EditorModel.toolBarPosition
 import me.chill.views.editor.Editor
 import me.chill.views.editor.MenuBar
 import me.chill.views.editor.ToolBar
@@ -50,9 +52,9 @@ class EditorController : Controller(), ActionMapObserver {
       IMPORT_VCS -> importFromVCS()
       EXPORT_PDF -> export()
       STRIKETHROUGH -> TODO()
-      MOVE_TOOLBAR_TOP -> EditorModel.setToolBarPosition(TOP)
-      MOVE_TOOLBAR_LEFT -> EditorModel.setToolBarPosition(LEFT)
-      TOGGLE_TOOBAR_VISIBILITY -> EditorModel.toggleToolBarVisibility()
+      MOVE_TOOLBAR_TOP -> toolBarPosition = TOP
+      MOVE_TOOLBAR_LEFT -> toolBarPosition = LEFT
+      TOGGLE_TOOBAR_VISIBILITY -> toggleToolBarVisibility()
     }
   }
 

@@ -4,9 +4,9 @@ import me.chill.actionmap.ActionMap
 import me.chill.actionmap.ActionMap.*
 import me.chill.actionmap.ActionMapObservable
 import me.chill.actionmap.ActionMapObserver
-import me.chill.views.editor.ToolBar
 import me.chill.views.editor.ToolBar.Position.LEFT
 import me.chill.views.editor.ToolBar.Position.TOP
+import java.io.File
 
 
 /**
@@ -16,8 +16,19 @@ object EditorModel : ActionMapObservable {
 
   private val listeners = mutableListOf<ActionMapObserver>()
 
-  private var toolBarPosition = TOP
-  private var toolBarVisibility = true
+  var toolBarPosition = TOP
+    set(value) {
+      field = value
+      notifyObservers(
+        when (value) {
+          TOP -> MOVE_TOOLBAR_TOP
+          LEFT -> MOVE_TOOLBAR_LEFT
+        }
+      )
+    }
+  var toolBarVisibility = true
+    private set
+  private var currentFolder: File? = null
 
   init {
     // TODO: Add settings loading here
@@ -35,25 +46,16 @@ object EditorModel : ActionMapObservable {
     listeners.forEach { it.update(actionMap) }
   }
 
-  fun setToolBarPosition(toolBarPosition: ToolBar.Position): EditorModel {
-    notifyObservers(
-      when (toolBarPosition) {
-        TOP -> MOVE_TOOLBAR_TOP
-        LEFT -> MOVE_TOOLBAR_LEFT
-      }
-    )
-    this.toolBarPosition = toolBarPosition
-    return this
-  }
-
-  fun getToolBarPosition() = toolBarPosition
-
-  fun toggleToolBarVisibility(): EditorModel {
-    notifyObservers(TOGGLE_TOOBAR_VISIBILITY)
+  fun toggleToolBarVisibility() {
     toolBarVisibility = !toolBarVisibility
-    println(toolBarVisibility)
+    notifyObservers(TOGGLE_TOOBAR_VISIBILITY)
+  }
+
+  fun setCurrentFolder(currentFolder: File): EditorModel {
+    notifyObservers(OPEN_FOLDER)
+    this.currentFolder = currentFolder
     return this
   }
 
-  fun getToolBarVisibility() = toolBarVisibility
+  fun getCurrentFolder() = currentFolder
 }

@@ -10,6 +10,7 @@ import me.chill.actionmap.ActionMap
 import me.chill.actionmap.ActionMap.*
 import me.chill.actionmap.ActionMapObserver
 import me.chill.models.EditorModel
+import me.chill.models.EditorModel.toolBarVisibility
 import me.chill.models.FileExplorerItem
 import me.chill.styles.StatusBarStyles
 import me.chill.ui.FolderTreeView
@@ -103,7 +104,7 @@ class Editor : View("Omnius"), ActionMapObserver {
   }
 
   private fun toggleToolBarVisibility() {
-    with(toolBar.root) { isVisible = !isVisible }
+    toolBar.root.isVisible = toolBarVisibility
   }
 
   // TODO: Check the file extension first before opening
