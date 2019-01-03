@@ -6,13 +6,14 @@ import me.chill.actionmap.ActionMap
 import me.chill.actionmap.ActionMap.OPTIONS_SAVE
 import me.chill.actionmap.ActionMapObservable
 import me.chill.actionmap.ActionMapObserver
+import me.chill.configuration.ConfigurationManager.ConfigurationKeys.*
 import me.chill.models.Configuration
 import me.chill.models.EditorModel
+import me.chill.utility.extensions.get
 import me.chill.utility.extensions.writeToFile
 import me.chill.views.ToolBar.Position.TOP
 import java.io.File
 import java.io.FileReader
-import java.io.FileWriter
 
 /**
  * Manages the configurations of the editor for the installation.
@@ -25,6 +26,18 @@ import java.io.FileWriter
  */
 object ConfigurationManager : ActionMapObservable {
 
+  /**
+   * Constant set of keys the configuration JSON should use.
+   *
+   * @param keyName Name of the JSON key to use
+   */
+  enum class ConfigurationKeys(val keyName: String) {
+    TOOLBAR_POSITION("toolBarPosition"),
+    TOOLBAR_VISIBILITY("toolBarVisibility"),
+    FONT_SIZE("fontSize"),
+    FONT_FAMILY("fontFamily"),
+  }
+
   private const val configurationFilePath = "config/config.json"
 
   private val listeners = mutableListOf<ActionMapObserver>()
@@ -33,18 +46,6 @@ object ConfigurationManager : ActionMapObservable {
   lateinit var configuration: Configuration
     private set
 
-  override fun addObserver(actionMapObserver: ActionMapObserver) {
-    listeners.add(actionMapObserver)
-  }
-
-  override fun removeObserver(actionMapObserver: ActionMapObserver) {
-    listeners.remove(actionMapObserver)
-  }
-
-  override fun notifyObservers(actionMap: ActionMap, data: JsonObject?) {
-    listeners.forEach { it.update(actionMap, data) }
-  }
-
   /**
    * Updates the configuration file with the data
    *
@@ -52,9 +53,9 @@ object ConfigurationManager : ActionMapObservable {
    */
   fun updateConfiguration(data: JsonObject) {
     val toolBarPosition = TOP
-    val toolBarVisibility = data.get("toolBarVisibility")?.asBoolean ?: configuration.toolBarVisibility
-    val fontSize = data.get("fontSize")?.asInt ?: configuration.fontSize
-    val fontFamily = data.get("fontFamily")?.asJsonArray?.map { it.asString } ?: configuration.fontFamily
+    val toolBarVisibility = data.get(TOOLBAR_VISIBILITY)?.asBoolean ?: configuration.toolBarVisibility
+    val fontSize = data.get(FONT_SIZE)?.asInt ?: configuration.fontSize
+    val fontFamily = data.get(FONT_FAMILY)?.asJsonArray?.map { it.asString } ?: configuration.fontFamily
 
     configuration = Configuration(toolBarPosition, toolBarVisibility, null, fontSize, fontFamily)
     gson.writeToFile(configurationFilePath, configuration)
@@ -84,5 +85,17 @@ object ConfigurationManager : ActionMapObservable {
     configurationFile.parentFile.mkdir()
     configurationFile.createNewFile()
     gson.writeToFile(configurationFilePath, Configuration())
+  }
+
+  override fun addObserver(actionMapObserver: ActionMapObserver) {
+    listeners.add(actionMapObserver)
+  }
+
+  override fun removeObserver(actionMapObserver: ActionMapObserver) {
+    listeners.remove(actionMapObserver)
+  }
+
+  override fun notifyObservers(actionMap: ActionMap, data: JsonObject?) {
+    listeners.forEach { it.update(actionMap, data) }
   }
 }

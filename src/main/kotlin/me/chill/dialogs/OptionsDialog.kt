@@ -8,9 +8,12 @@ import me.chill.actionmap.ActionMap
 import me.chill.actionmap.ActionMap.OPTIONS_SAVE
 import me.chill.actionmap.ActionMapObservable
 import me.chill.actionmap.ActionMapObserver
-import me.chill.models.EditorModel
-import tornadofx.*
+import me.chill.configuration.ConfigurationManager.ConfigurationKeys.FONT_SIZE
+import me.chill.configuration.ConfigurationManager.ConfigurationKeys.TOOLBAR_VISIBILITY
 import me.chill.controllers.EditorController
+import me.chill.models.EditorModel
+import me.chill.utility.extensions.addProperty
+import tornadofx.*
 
 /**
  * Dialog to allow users to edit their preferences, which is then saved to the configuration
@@ -81,8 +84,14 @@ class OptionsDialog : Fragment("Options"), ActionMapObservable {
     row {
       button("Save & Apply").action {
         val options = JsonObject()
-        options.addProperty("fontSize", fontSizeComboBox.selectionModel.selectedItem.toInt())
-        options.addProperty("toolBarVisibility", toolBarVisibilityCheckBox.isSelected)
+          .addProperty(
+            FONT_SIZE,
+            fontSizeComboBox.selectionModel.selectedItem.toInt()
+          )
+          .addProperty(
+            TOOLBAR_VISIBILITY,
+            toolBarVisibilityCheckBox.isSelected
+          )
         notifyObservers(OPTIONS_SAVE, options)
         close()
       }
