@@ -1,9 +1,13 @@
 package me.chill.controllers
 
+import com.google.gson.JsonObject
 import javafx.stage.DirectoryChooser
 import me.chill.actionmap.ActionMap
 import me.chill.actionmap.ActionMap.*
 import me.chill.actionmap.ActionMapObserver
+import me.chill.configuration.ConfigurationManager
+import me.chill.dialogs.ExitDialog
+import me.chill.dialogs.OptionsDialog
 import me.chill.models.EditorModel.currentFolder
 import me.chill.models.EditorModel.toggleToolBarVisibility
 import me.chill.models.EditorModel.toolBarPosition
@@ -12,7 +16,6 @@ import me.chill.views.MenuBar
 import me.chill.views.ToolBar
 import me.chill.views.ToolBar.Position.LEFT
 import me.chill.views.ToolBar.Position.TOP
-import me.chill.dialogs.ExitFragment
 import tornadofx.Controller
 
 // TODO: Split out the controllers for the editing area
@@ -27,7 +30,7 @@ class EditorController : Controller(), ActionMapObserver {
     menuBar.addObserver(this)
   }
 
-  override fun update(actionMap: ActionMap) {
+  override fun update(actionMap: ActionMap, data: JsonObject?) {
     when (actionMap) {
       OPEN_FOLDER -> openFolder()
       CUT -> markdownArea.cut()
@@ -51,6 +54,7 @@ class EditorController : Controller(), ActionMapObserver {
       MOVE_TOOLBAR_TOP -> toolBarPosition = TOP
       MOVE_TOOLBAR_LEFT -> toolBarPosition = LEFT
       TOGGLE_TOOLBAR_VISIBILITY -> toggleToolBarVisibility()
+      OPTIONS_SAVE -> ConfigurationManager.updateConfiguration(data!!)
       else -> return
     }
   }
@@ -84,11 +88,14 @@ class EditorController : Controller(), ActionMapObserver {
   }
 
   private fun launchOptions() {
-    println("Launching options")
+    with(find<OptionsDialog>()) {
+      addObserver(this@EditorController)
+      openModal()
+    }
   }
 
   private fun exit() {
     // TODO: Check if work is saved
-    find<ExitFragment>().openModal(resizable = false)
+    find<ExitDialog>().openModal(resizable = false)
   }
 }

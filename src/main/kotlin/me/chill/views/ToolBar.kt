@@ -1,5 +1,6 @@
 package me.chill.views
 
+import com.google.gson.JsonObject
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import javafx.geometry.Orientation.VERTICAL
 import javafx.scene.control.ToolBar
@@ -30,7 +31,7 @@ class ToolBar : View(), ActionMapObservable {
     listeners.remove(actionMapObserver)
   }
 
-  override fun notifyObservers(actionMap: ActionMap) {
+  override fun notifyObservers(actionMap: ActionMap, data: JsonObject?) {
     listeners.forEach { it.update(actionMap) }
   }
 
@@ -52,7 +53,7 @@ class ToolBar : View(), ActionMapObservable {
         prefHeight = 40.0
         icon?.let { graphic = addGlyph(it) }
         tooltip(actionName)
-        action { notifyObservers(actionMap) }
+        action { notifyObservers(actionMap, null) }
       }
     }
 

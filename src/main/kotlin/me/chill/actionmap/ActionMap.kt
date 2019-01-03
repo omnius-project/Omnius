@@ -38,4 +38,5 @@ enum class ActionMap(
   FOLDER_CHANGED("Folder Changed"),
   FONT_SIZE_CHANGED("Font Size Changed"),
   FONT_FAMILY_CHANGED("Font Family Changed"),
+  OPTIONS_SAVE("Options Save"),
 }

@@ -17,6 +17,6 @@ data class Configuration(
   val toolBarPosition: ToolBar.Position = TOP,
   val toolBarVisibility: Boolean = true,
   val previousOpenFolderPath: String? = null,
-  val fontSize: Int = 16,
+  val fontSize: Int = 15,
   val fontFamily: List<String> = listOf("monospace")
 )

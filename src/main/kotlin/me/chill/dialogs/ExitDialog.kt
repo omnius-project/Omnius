@@ -10,7 +10,7 @@ import me.chill.styles.Styles.Companion.dangerButton
 import me.chill.styles.Styles.Companion.dangerRed
 import tornadofx.*
 
-class ExitFragment : Fragment("Close warning") {
+class ExitDialog : Fragment("Close warning") {
   private val controller: ExitFragmentController by inject()
 
   override val root = vbox {

@@ -1,5 +1,6 @@
 package me.chill.views
 
+import com.google.gson.JsonObject
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
 import javafx.scene.control.Menu
@@ -24,7 +25,7 @@ class MenuBar : View(), ActionMapObservable {
     listeners.remove(actionMapObserver)
   }
 
-  override fun notifyObservers(actionMap: ActionMap) {
+  override fun notifyObservers(actionMap: ActionMap, data: JsonObject?) {
     listeners.forEach { it.update(actionMap) }
   }
 
@@ -74,11 +75,11 @@ class MenuBar : View(), ActionMapObservable {
             radiomenuitem("Top").apply {
               toggleGroup = this@togglegroup
               isSelected = true
-              action { notifyObservers(MOVE_TOOLBAR_TOP) }
+              action { notifyObservers(MOVE_TOOLBAR_TOP, null) }
             }
             radiomenuitem("Left") {
               toggleGroup = this@togglegroup
-              action { notifyObservers(MOVE_TOOLBAR_LEFT) }
+              action { notifyObservers(MOVE_TOOLBAR_LEFT, null) }
             }
           }
         }
@@ -87,7 +88,7 @@ class MenuBar : View(), ActionMapObservable {
 
         checkmenuitem("Toggle toolbar").apply {
           isSelected = true
-          action { notifyObservers(TOGGLE_TOOLBAR_VISIBILITY) }
+          action { notifyObservers(TOGGLE_TOOLBAR_VISIBILITY, null) }
         }
       }
     }
@@ -103,7 +104,7 @@ class MenuBar : View(), ActionMapObservable {
       icon?.let { graphic = addGlyph(it).apply(iconProperties) }
       accelerator?.let { this@apply.accelerator = it }
       action {
-        notifyObservers(actionMap)
+        notifyObservers(actionMap, null)
       }
     }
 
