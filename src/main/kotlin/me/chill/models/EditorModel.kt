@@ -5,6 +5,7 @@ import me.chill.actionmap.ActionMap
 import me.chill.actionmap.ActionMap.*
 import me.chill.actionmap.ActionMapObservable
 import me.chill.actionmap.ActionMapObserver
+import me.chill.configuration.ConfigurationChangeObserver
 import me.chill.configuration.ConfigurationManager
 import me.chill.configuration.ConfigurationManager.configuration
 import me.chill.views.Editor
@@ -24,7 +25,7 @@ import java.io.File
  * - Observes [ConfigurationManager] for changes in the configurations.
  */
 // TODO: Change the configuration property changes to another observer interface to prevent confusion
-object EditorModel : ActionMapObservable, ActionMapObserver {
+object EditorModel : ActionMapObservable, ConfigurationChangeObserver {
 
   private val listeners = mutableListOf<ActionMapObserver>()
 
@@ -49,10 +50,11 @@ object EditorModel : ActionMapObservable, ActionMapObserver {
       notifyObservers(TOGGLE_TOOLBAR_VISIBILITY)
     }
 
-  var currentFolder: File? = with(configuration.previousOpenFolderPath) {
-    this ?: return@with null
-    File(this)
-  }
+  var currentFolder: File? =
+    with(configuration.previousOpenFolderPath) {
+      this ?: return@with null
+      File(this)
+    }
     set(value) {
       field = value
       notifyObservers(FOLDER_CHANGED)
@@ -82,11 +84,8 @@ object EditorModel : ActionMapObservable, ActionMapObserver {
     listeners.forEach { it.update(actionMap, data) }
   }
 
-  override fun update(actionMap: ActionMap, data: JsonObject?) {
-    when (actionMap) {
-      OPTIONS_SAVE -> updateState()
-      else -> return
-    }
+  override fun update(configuration: JsonObject?) {
+    updateState()
   }
 
   fun toggleToolBarVisibility() {

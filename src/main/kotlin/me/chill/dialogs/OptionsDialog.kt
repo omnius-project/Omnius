@@ -4,10 +4,10 @@ import com.google.gson.JsonObject
 import javafx.geometry.Insets
 import javafx.scene.control.CheckBox
 import javafx.scene.control.ComboBox
-import me.chill.actionmap.ActionMap
 import me.chill.actionmap.ActionMap.OPTIONS_SAVE
 import me.chill.actionmap.ActionMapObservable
-import me.chill.actionmap.ActionMapObserver
+import me.chill.configuration.ConfigurationChangeObservable
+import me.chill.configuration.ConfigurationChangeObserver
 import me.chill.configuration.ConfigurationManager.ConfigurationKeys.FONT_SIZE
 import me.chill.configuration.ConfigurationManager.ConfigurationKeys.TOOLBAR_VISIBILITY
 import me.chill.controllers.EditorController
@@ -27,23 +27,23 @@ import tornadofx.*
  *
  * @see [EditorController]
  */
-class OptionsDialog : Fragment("Options"), ActionMapObservable {
+class OptionsDialog : Fragment("Options"), ConfigurationChangeObservable {
 
-  private val listeners = mutableListOf<ActionMapObserver>()
+  private val listeners = mutableListOf<ConfigurationChangeObserver>()
 
   private lateinit var toolBarVisibilityCheckBox: CheckBox
   private lateinit var fontSizeComboBox: ComboBox<String>
 
-  override fun addObserver(actionMapObserver: ActionMapObserver) {
-    listeners.add(actionMapObserver)
+  override fun addObserver(observer: ConfigurationChangeObserver) {
+    listeners.add(observer)
   }
 
-  override fun removeObserver(actionMapObserver: ActionMapObserver) {
-    listeners.remove(actionMapObserver)
+  override fun removeObserver(observer: ConfigurationChangeObserver) {
+    listeners.remove(observer)
   }
 
-  override fun notifyObservers(actionMap: ActionMap, data: JsonObject?) {
-    listeners.forEach { it.update(actionMap, data) }
+  override fun notifyObservers(configuration: JsonObject?) {
+    listeners.forEach { it.update(configuration) }
   }
 
   override val root = gridpane {
@@ -92,7 +92,7 @@ class OptionsDialog : Fragment("Options"), ActionMapObservable {
             TOOLBAR_VISIBILITY,
             toolBarVisibilityCheckBox.isSelected
           )
-        notifyObservers(OPTIONS_SAVE, options)
+        notifyObservers(options)
         close()
       }
     }

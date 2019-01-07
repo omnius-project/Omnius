@@ -2,10 +2,7 @@ package me.chill.configuration
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import me.chill.actionmap.ActionMap
-import me.chill.actionmap.ActionMap.OPTIONS_SAVE
 import me.chill.actionmap.ActionMapObservable
-import me.chill.actionmap.ActionMapObserver
 import me.chill.configuration.ConfigurationManager.ConfigurationKeys.*
 import me.chill.models.Configuration
 import me.chill.models.EditorModel
@@ -24,7 +21,7 @@ import java.io.FileReader
  * Is a [ActionMapObservable]
  * - Observed by [EditorModel] for changes in the configuration.
  */
-object ConfigurationManager : ActionMapObservable {
+object ConfigurationManager : ConfigurationChangeObservable {
 
   /**
    * Constant set of keys the configuration JSON should use.
@@ -40,7 +37,7 @@ object ConfigurationManager : ActionMapObservable {
 
   private const val configurationFilePath = "config/config.json"
 
-  private val listeners = mutableListOf<ActionMapObserver>()
+  private val listeners = mutableListOf<ConfigurationChangeObserver>()
 
   private val gson = Gson()
   lateinit var configuration: Configuration
@@ -59,7 +56,7 @@ object ConfigurationManager : ActionMapObservable {
 
     configuration = Configuration(toolBarPosition, toolBarVisibility, null, fontSize, fontFamily)
     gson.writeToFile(configurationFilePath, configuration)
-    notifyObservers(OPTIONS_SAVE)
+    notifyObservers()
   }
 
   /**
@@ -87,15 +84,15 @@ object ConfigurationManager : ActionMapObservable {
     gson.writeToFile(configurationFilePath, Configuration())
   }
 
-  override fun addObserver(actionMapObserver: ActionMapObserver) {
-    listeners.add(actionMapObserver)
+  override fun addObserver(observer: ConfigurationChangeObserver) {
+    listeners.add(observer)
   }
 
-  override fun removeObserver(actionMapObserver: ActionMapObserver) {
-    listeners.remove(actionMapObserver)
+  override fun removeObserver(observer: ConfigurationChangeObserver) {
+    listeners.remove(observer)
   }
 
-  override fun notifyObservers(actionMap: ActionMap, data: JsonObject?) {
-    listeners.forEach { it.update(actionMap, data) }
+  override fun notifyObservers(configuration: JsonObject?) {
+    listeners.forEach { it.update(configuration) }
   }
 }

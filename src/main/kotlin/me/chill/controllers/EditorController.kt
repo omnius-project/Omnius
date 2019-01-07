@@ -5,6 +5,7 @@ import javafx.stage.DirectoryChooser
 import me.chill.actionmap.ActionMap
 import me.chill.actionmap.ActionMap.*
 import me.chill.actionmap.ActionMapObserver
+import me.chill.configuration.ConfigurationChangeObserver
 import me.chill.configuration.ConfigurationManager
 import me.chill.dialogs.ExitDialog
 import me.chill.dialogs.OptionsDialog
@@ -29,7 +30,7 @@ import tornadofx.Controller
  * - Will subscribe to the [OptionsDialog] when it is created
  */
 // TODO: Split out the controllers for the editing area
-class EditorController : Controller(), ActionMapObserver {
+class EditorController : Controller(), ActionMapObserver, ConfigurationChangeObserver {
 
   private val markdownArea = find<MarkdownArea>()
   private val toolBar = find<ToolBar>()
@@ -38,6 +39,12 @@ class EditorController : Controller(), ActionMapObserver {
   init {
     toolBar.addObserver(this)
     menuBar.addObserver(this)
+  }
+
+  override fun update(configuration: JsonObject?) {
+    configuration
+      ?: throw IllegalStateException("Configuration object cannot be null when the controller is handling it")
+    ConfigurationManager.updateConfiguration(configuration)
   }
 
   override fun update(actionMap: ActionMap, data: JsonObject?) {
@@ -55,16 +62,15 @@ class EditorController : Controller(), ActionMapObserver {
       BOLD -> TODO()
       ITALIC -> TODO()
       UNDERLINE -> TODO()
+      STRIKETHROUGH -> TODO()
       NEW_FOLDER -> TODO()
       NEW_MARKDOWN_FILE -> TODO()
       NEW_UNTITLED_FILE -> TODO()
       IMPORT_VCS -> importFromVCS()
       EXPORT_PDF -> export()
-      STRIKETHROUGH -> TODO()
       MOVE_TOOLBAR_TOP -> toolBarPosition = TOP
       MOVE_TOOLBAR_LEFT -> toolBarPosition = LEFT
       TOGGLE_TOOLBAR_VISIBILITY -> toggleToolBarVisibility()
-      OPTIONS_SAVE -> ConfigurationManager.updateConfiguration(data!!)
       else -> return
     }
   }
@@ -86,22 +92,6 @@ class EditorController : Controller(), ActionMapObserver {
     folder ?: return
 
     currentFolder = folder
-  }
-
-  private fun saveFile() {
-    println("Saving file")
-  }
-
-  private fun saveAll() {
-    println("Saving all")
-  }
-
-  private fun importFromVCS() {
-    println("Importing from VCS")
-  }
-
-  private fun export() {
-    println("Exporting")
   }
 
   /**
@@ -127,5 +117,22 @@ class EditorController : Controller(), ActionMapObserver {
   // TODO: Check if work is saved
   private fun exit() {
     find<ExitDialog>().openModal(resizable = false)
+  }
+
+
+  private fun saveFile() {
+    println("Saving file")
+  }
+
+  private fun saveAll() {
+    println("Saving all")
+  }
+
+  private fun importFromVCS() {
+    println("Importing from VCS")
+  }
+
+  private fun export() {
+    println("Exporting")
   }
 }

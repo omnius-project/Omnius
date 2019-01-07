@@ -5,13 +5,14 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView
 import javafx.geometry.Pos.CENTER
 import javafx.scene.layout.Priority.ALWAYS
 import javafx.scene.text.FontWeight.BOLD
-import me.chill.controllers.ExitFragmentController
+import me.chill.controllers.ExitDialogController
 import me.chill.styles.Styles.Companion.dangerButton
 import me.chill.styles.Styles.Companion.dangerRed
 import tornadofx.*
 
 class ExitDialog : Fragment("Close warning") {
-  private val controller: ExitFragmentController by inject()
+  // TODO: Remove the coupling for controller-view
+  private val controller: ExitDialogController by inject()
 
   override val root = vbox {
     spacing = 10.0
