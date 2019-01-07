@@ -1,6 +1,5 @@
 package me.chill.views
 
-import com.google.gson.JsonObject
 import javafx.geometry.Orientation.HORIZONTAL
 import javafx.geometry.Orientation.VERTICAL
 import javafx.scene.layout.AnchorPane
@@ -33,7 +32,7 @@ class Editor : View("Omnius"), ActionMapObserver {
     EditorModel.addObserver(this)
   }
 
-  override fun update(actionMap: ActionMap, data: JsonObject?) {
+  override fun update(actionMap: ActionMap) {
     when (actionMap) {
       MOVE_TOOLBAR_TOP -> moveToolBar(TOP)
       MOVE_TOOLBAR_LEFT -> moveToolBar(LEFT)

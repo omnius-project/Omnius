@@ -47,7 +47,7 @@ class EditorController : Controller(), ActionMapObserver, ConfigurationChangeObs
     ConfigurationManager.updateConfiguration(configuration)
   }
 
-  override fun update(actionMap: ActionMap, data: JsonObject?) {
+  override fun update(actionMap: ActionMap) {
     when (actionMap) {
       OPEN_FOLDER -> openFolder()
       CUT -> markdownArea.cut()

@@ -1,7 +1,5 @@
 package me.chill.actionmap
 
-import com.google.gson.JsonObject
-
 /**
  * Classes implementing this interface can be observed by [ActionMapObserver]s which listen
  * for actions from the [ActionMap] to occur and act accordingly.
@@ -25,11 +23,9 @@ interface ActionMapObservable {
   fun removeObserver(actionMapObserver: ActionMapObserver)
 
   /**
-   * Notifies all observers that an action from [ActionMap] has occurred, optionally passes some
-   * [data] to the observers.
+   * Notifies all observers that an action from [ActionMap] has occurred.
    *
    * @param actionMap Action that occurred
-   * @param data Optional data in the JSON format to give to observers
    */
-  fun notifyObservers(actionMap: ActionMap, data: JsonObject? = null)
+  fun notifyObservers(actionMap: ActionMap)
 }

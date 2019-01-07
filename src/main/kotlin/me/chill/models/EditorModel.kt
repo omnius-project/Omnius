@@ -80,8 +80,8 @@ object EditorModel : ActionMapObservable, ConfigurationChangeObserver {
     listeners.remove(actionMapObserver)
   }
 
-  override fun notifyObservers(actionMap: ActionMap, data: JsonObject?) {
-    listeners.forEach { it.update(actionMap, data) }
+  override fun notifyObservers(actionMap: ActionMap) {
+    listeners.forEach { it.update(actionMap) }
   }
 
   override fun update(configuration: JsonObject?) {
@@ -90,7 +90,7 @@ object EditorModel : ActionMapObservable, ConfigurationChangeObserver {
 
   fun toggleToolBarVisibility() {
     toolBarVisibility = !toolBarVisibility
-    notifyObservers(TOGGLE_TOOLBAR_VISIBILITY, null)
+    notifyObservers(TOGGLE_TOOLBAR_VISIBILITY)
   }
 
   private fun updateState() {
