@@ -4,8 +4,6 @@ import com.google.gson.JsonObject
 import javafx.geometry.Insets
 import javafx.scene.control.CheckBox
 import javafx.scene.control.ComboBox
-import me.chill.actionmap.ActionMap.OPTIONS_SAVE
-import me.chill.actionmap.ActionMapObservable
 import me.chill.configuration.ConfigurationChangeObservable
 import me.chill.configuration.ConfigurationChangeObserver
 import me.chill.configuration.ConfigurationManager.ConfigurationKeys.FONT_SIZE
@@ -18,12 +16,6 @@ import tornadofx.*
 /**
  * Dialog to allow users to edit their preferences, which is then saved to the configuration
  * file.
- *
- * When the user saves the options, a [OPTIONS_SAVE] event is triggered, notifying all
- * observers, which react accordingly.
- *
- * Is a [ActionMapObservable]
- * - Will be observed by [EditorController] when this dialog is inflated
  *
  * @see [EditorController]
  */

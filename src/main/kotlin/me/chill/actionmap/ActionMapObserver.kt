@@ -1,9 +1,7 @@
 package me.chill.actionmap
 
 /**
- * Classes implementing this interface can observe classes that implement the [ActionMapObservable]
- * interface and will be notified by these observables when an action from the [ActionMap] is triggered
- * so it can react accordingly.
+ * Subscribes to [ActionMapObservable] to be notified of changes to the configuration.
  *
  * @see [ActionMapObservable]
  */

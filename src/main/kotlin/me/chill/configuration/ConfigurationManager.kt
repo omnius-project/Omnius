@@ -14,12 +14,6 @@ import java.io.FileReader
 
 /**
  * Manages the configurations of the editor for the installation.
- *
- * Editing the configurations will notify [EditorModel] and the model will react accordingly to
- * the changes made
- *
- * Is a [ActionMapObservable]
- * - Observed by [EditorModel] for changes in the configuration.
  */
 object ConfigurationManager : ConfigurationChangeObservable {
 

@@ -1,8 +1,8 @@
 package me.chill.actionmap
 
 /**
- * Classes implementing this interface can be observed by [ActionMapObserver]s which listen
- * for actions from the [ActionMap] to occur and act accordingly.
+ * [ActionMapObserver] subscribe to this to be notified when actions from the [ActionMap]
+ * is made.
  *
  * @see [ActionMapObserver]
  */

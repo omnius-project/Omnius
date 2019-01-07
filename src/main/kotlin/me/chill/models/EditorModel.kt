@@ -16,13 +16,6 @@ import java.io.File
 /**
  * Model for the editor - stores user preferences that can be loaded from the settings file
  * using [ConfigurationManager].
- *
- * Editing the properties of the model will notify the [Editor] and the view will react accordingly
- * to the changes made.
- *
- * Is both an [ActionMapObservable] and [ActionMapObserver]:
- * - The [Editor] view observes this model for changes in the properties.
- * - Observes [ConfigurationManager] for changes in the configurations.
  */
 // TODO: Change the configuration property changes to another observer interface to prevent confusion
 object EditorModel : ActionMapObservable, ConfigurationChangeObserver {

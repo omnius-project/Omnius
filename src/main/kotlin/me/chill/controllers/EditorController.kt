@@ -24,10 +24,6 @@ import tornadofx.Controller
 
 /**
  * Controller between [Editor] and [EditorModel].
- *
- * Is a [ActionMapObserver]
- * - Observes [ToolBar] and [MenuBar] for user selections for the options
- * - Will subscribe to the [OptionsDialog] when it is created
  */
 // TODO: Split out the controllers for the editing area
 class EditorController : Controller(), ActionMapObserver, ConfigurationChangeObserver {
